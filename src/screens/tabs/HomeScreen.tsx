@@ -12,14 +12,9 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Colors, Typography, Spacing, Radius, Shadow, SacredSymbols } from '../theme/colors';
-import SpiritualHeader from '../components/SpiritualHeader';
-import {
-  SaffronButton,
-  SectionHeader,
-  MantraCard,
-  OmDivider,
-} from '../components/UIComponents';
+import SpiritualHeader from '../../components/SpiritualHeader';
+import { SaffronButton, MantraCard, SectionHeader, OmDivider } from '../../components/UIComponents';
+import { Colors, Radius, Typography, SacredSymbols, Spacing, Shadow } from '../../theme/colors';
 
 const { width } = Dimensions.get('window');
 

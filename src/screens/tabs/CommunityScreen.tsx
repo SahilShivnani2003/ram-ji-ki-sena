@@ -12,10 +12,9 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Colors, Typography, Spacing, Radius, Shadow, SacredSymbols } from '../theme/colors';
-import SpiritualHeader from '../components/SpiritualHeader';
-import { SaffronButton } from '../components/UIComponents';
-
+import SpiritualHeader from '../../components/SpiritualHeader';
+import { SaffronButton } from '../../components/UIComponents';
+import { Colors, SacredSymbols, Spacing, Typography, Radius, Shadow } from '../../theme/colors';
 // ─── Types ───────────────────────────────────────────────────────
 
 interface Post {
