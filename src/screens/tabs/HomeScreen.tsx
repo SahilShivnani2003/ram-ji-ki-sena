@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   StatusBar,
   Alert,
 } from 'react-native';
-import {useI18n} from '../i18n';
-import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../theme';
+import { useI18n } from '../../i18n';
+import { Colors, Fonts, Spacing, BorderRadius, Shadow } from '../../theme';
 import {
   SectionHeader,
   Badge,
@@ -17,20 +17,30 @@ import {
   StarRating,
   PrimaryButton,
   OmSymbol,
-} from '../components';
+} from '../../components';
 import {
   MANDIRS,
   KATHA_EVENTS,
   DOHAS,
   RAM_NAAM_LEADERBOARD,
-} from '../data/staticData';
+} from '../../data/staticData';
+import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
+import { RootTabParamList } from '../../navigation/TabNavigator';
+import {
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+import { RootParamList } from '../../navigation/AppNavigator';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-interface HomeScreenProps {
-  navigation: any;
+interface IQuickLink {
+  icon: string;
+  label: string;
+  screen: keyof RootTabParamList;
 }
+type homeProps = NativeBottomTabScreenProps<RootTabParamList, 'Home'>;
 
-const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
-  const {t, isHindi} = useI18n();
+const HomeScreen = ({ navigation }: homeProps) => {
+  const { t, isHindi } = useI18n();
   const [ramNaamCount, setRamNaamCount] = useState(1250);
   const [tapAnim, setTapAnim] = useState(false);
   const currentDoha = DOHAS[0];
@@ -48,18 +58,30 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     setTimeout(() => setTapAnim(false), 200);
   };
 
-  const quickLinks = [
-    {icon: '🙏', label: t.bookPandit, screen: 'Pandits'},
-    {icon: '🛒', label: t.orderSamagri, screen: 'Community'},
-    {icon: '📺', label: t.liveDarshan, screen: 'Mandirs'},
-    {icon: '💛', label: t.donate, screen: 'Profile'},
+  const quickLinks: IQuickLink[] = [
+    {
+      icon: 'account-tie', // pandit
+      label: t.bookPandit,
+      screen: 'Pandits',
+    },
+    {
+      icon: 'cart-outline',
+      label: t.orderSamagri,
+      screen: 'Community',
+    },
+    {
+      icon: 'television-play',
+      label: t.liveDarshan,
+      screen: 'Mandirs',
+    }
   ];
 
   return (
     <ScrollView
       style={styles.container}
       showsVerticalScrollIndicator={false}
-      stickyHeaderIndices={[0]}>
+      stickyHeaderIndices={[0]}
+    >
       <StatusBar barStyle="light-content" backgroundColor={Colors.primary} />
 
       {/* ── Header ──────────────────────────────────────── */}
@@ -71,7 +93,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           </View>
           <TouchableOpacity
             style={styles.omCircle}
-            onPress={() => navigation.navigate('Profile')}>
+            onPress={() =>
+              navigation
+                .getParent<NativeStackNavigationProp<RootParamList>>()
+                .navigate('profile')
+            }
+          >
             <OmSymbol size={22} color={Colors.gold} />
           </TouchableOpacity>
         </View>
@@ -110,8 +137,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           <TouchableOpacity
             key={i}
             style={styles.quickLinkCard}
-            onPress={() => navigation.navigate(link.screen)}>
-            <Text style={styles.quickLinkIcon}>{link.icon}</Text>
+            onPress={() => navigation.navigate(link.screen)}
+          >
+            <MaterialCommunityIcons name={link.icon} size={24} color="#000" />
             <Text style={styles.quickLinkLabel}>{link.label}</Text>
           </TouchableOpacity>
         ))}
@@ -123,7 +151,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         <View style={styles.ramNaamTop}>
           <View style={styles.ramNaamCountBox}>
             <Text style={styles.ramNaamLabel}>{t.yourCount}</Text>
-            <Text style={styles.ramNaamNumber}>{ramNaamCount.toLocaleString()}</Text>
+            <Text style={styles.ramNaamNumber}>
+              {ramNaamCount.toLocaleString()}
+            </Text>
           </View>
           <View style={styles.ramNaamDivider} />
           <View style={styles.ramNaamCountBox}>
@@ -135,7 +165,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         <TouchableOpacity
           style={[styles.ramNaamTapBtn, tapAnim && styles.ramNaamTapBtnActive]}
           onPress={handleRamNaamTap}
-          activeOpacity={0.8}>
+          activeOpacity={0.8}
+        >
           <Text style={styles.ramNaamBtnIcon}>🔱</Text>
           <Text style={styles.ramNaamBtnText}>
             {isHindi ? 'जय श्री राम' : 'Jai Shri Ram'}
@@ -168,12 +199,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.horizontalScroll}>
+        contentContainerStyle={styles.horizontalScroll}
+      >
         {KATHA_EVENTS.map(event => (
           <TouchableOpacity
             key={event.id}
             style={styles.kathaCard}
-            onPress={() => navigation.navigate('Katha')}>
+            onPress={() => navigation.navigate('Katha')}
+          >
             <View style={styles.kathaCardHeader}>
               <Text style={styles.kathaIcon}>{event.image}</Text>
               {event.isLive && <LiveBadge />}
@@ -199,7 +232,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
                 label={event.isLive ? t.watchNow : t.registerFree}
                 onPress={() => Alert.alert('🙏', 'Jai Shri Ram!')}
                 small
-                style={{marginLeft: Spacing.sm}}
+                style={{ marginLeft: Spacing.sm }}
               />
             </View>
           </TouchableOpacity>
@@ -216,7 +249,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         <TouchableOpacity
           key={mandir.id}
           style={styles.mandirListCard}
-          onPress={() => navigation.navigate('Mandirs')}>
+          onPress={() => navigation.navigate('Mandirs')}
+        >
           <Text style={styles.mandirListIcon}>{mandir.image}</Text>
           <View style={styles.mandirListInfo}>
             <Text style={styles.mandirListName} numberOfLines={1}>
@@ -240,13 +274,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         </TouchableOpacity>
       ))}
 
-      <View style={{height: 80}} />
+      <View style={{ height: 80 }} />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {flex: 1, backgroundColor: Colors.background},
+  container: { flex: 1, backgroundColor: Colors.background },
 
   // Header
   header: {
@@ -261,7 +295,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: Spacing.md,
   },
-  greetingText: {color: 'rgba(255,255,255,0.9)', fontSize: Fonts.sizes.sm},
+  greetingText: { color: 'rgba(255,255,255,0.9)', fontSize: Fonts.sizes.sm },
   ramText: {
     color: Colors.textLight,
     fontSize: Fonts.sizes.xxxl,
@@ -286,7 +320,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.sm,
     paddingVertical: Spacing.xs,
   },
-  marqueeIcon: {fontSize: 14, marginRight: Spacing.xs},
+  marqueeIcon: { fontSize: 14, marginRight: Spacing.xs },
   marqueeText: {
     color: Colors.goldLight,
     fontSize: Fonts.sizes.xs,
@@ -358,7 +392,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     ...Shadow.sm,
   },
-  quickLinkIcon: {fontSize: 26},
+  quickLinkIcon: { fontSize: 26 },
   quickLinkLabel: {
     color: Colors.textPrimary,
     fontSize: 10,
@@ -382,7 +416,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     marginBottom: Spacing.xl,
   },
-  ramNaamCountBox: {alignItems: 'center'},
+  ramNaamCountBox: { alignItems: 'center' },
   ramNaamLabel: {
     fontSize: Fonts.sizes.xs,
     color: Colors.textMuted,
@@ -399,7 +433,7 @@ const styles = StyleSheet.create({
     fontWeight: '900',
     color: Colors.goldDark,
   },
-  ramNaamDivider: {width: 1, backgroundColor: Colors.border},
+  ramNaamDivider: { width: 1, backgroundColor: Colors.border },
   ramNaamTapBtn: {
     backgroundColor: Colors.saffronBg,
     borderRadius: BorderRadius.lg,
@@ -410,8 +444,11 @@ const styles = StyleSheet.create({
     borderStyle: 'dashed',
     marginBottom: Spacing.lg,
   },
-  ramNaamTapBtnActive: {backgroundColor: Colors.primaryLight, borderStyle: 'solid'},
-  ramNaamBtnIcon: {fontSize: 40, marginBottom: Spacing.xs},
+  ramNaamTapBtnActive: {
+    backgroundColor: Colors.primaryLight,
+    borderStyle: 'solid',
+  },
+  ramNaamBtnIcon: { fontSize: 40, marginBottom: Spacing.xs },
   ramNaamBtnText: {
     fontSize: Fonts.sizes.xl,
     fontWeight: '900',
@@ -422,7 +459,7 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     marginTop: 4,
   },
-  leaderboardMini: {marginTop: Spacing.sm},
+  leaderboardMini: { marginTop: Spacing.sm },
   leaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -436,7 +473,7 @@ const styles = StyleSheet.create({
     color: Colors.gold,
     fontWeight: '800',
   },
-  leaderName: {flex: 1, fontSize: Fonts.sizes.sm, color: Colors.textPrimary},
+  leaderName: { flex: 1, fontSize: Fonts.sizes.sm, color: Colors.textPrimary },
   leaderCount: {
     fontSize: Fonts.sizes.sm,
     color: Colors.primary,
@@ -444,7 +481,7 @@ const styles = StyleSheet.create({
   },
 
   // Katha Horizontal Cards
-  horizontalScroll: {paddingHorizontal: Spacing.lg},
+  horizontalScroll: { paddingHorizontal: Spacing.lg },
   kathaCard: {
     width: 240,
     backgroundColor: Colors.cardBg,
@@ -461,7 +498,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: Spacing.sm,
   },
-  kathaIcon: {fontSize: 32},
+  kathaIcon: { fontSize: 32 },
   kathaTitle: {
     fontSize: Fonts.sizes.md,
     fontWeight: '700',
@@ -499,8 +536,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     ...Shadow.sm,
   },
-  mandirListIcon: {fontSize: 36, marginRight: Spacing.md},
-  mandirListInfo: {flex: 1},
+  mandirListIcon: { fontSize: 36, marginRight: Spacing.md },
+  mandirListInfo: { flex: 1 },
   mandirListName: {
     fontSize: Fonts.sizes.md,
     fontWeight: '700',
@@ -511,7 +548,7 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     marginBottom: 4,
   },
-  mandirListRight: {alignItems: 'flex-end', gap: 6},
+  mandirListRight: { alignItems: 'flex-end', gap: 6 },
   mandirListDist: {
     fontSize: Fonts.sizes.sm,
     color: Colors.primary,

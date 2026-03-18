@@ -8,10 +8,10 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import {useI18n} from '../i18n';
-import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../theme';
-import {GradientHeader, Badge, SectionHeader} from '../components';
-import {COMMUNITY_POSTS} from '../data/staticData';
+import {useI18n} from '../../i18n';
+import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../../theme';
+import {GradientHeader, Badge, SectionHeader} from '../../components';
+import {COMMUNITY_POSTS} from '../../data/staticData';
 
 const CommunityScreen: React.FC = () => {
   const {t, isHindi} = useI18n();

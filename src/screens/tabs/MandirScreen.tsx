@@ -8,8 +8,8 @@ import {
   TextInput,
   Alert,
 } from 'react-native';
-import {useI18n} from '../i18n';
-import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../theme';
+import {useI18n} from '../../i18n';
+import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../../theme';
 import {
   GradientHeader,
   Badge,
@@ -17,8 +17,8 @@ import {
   ChipFilter,
   LiveBadge,
   PrimaryButton,
-} from '../components';
-import {MANDIRS} from '../data/staticData';
+} from '../../components';
+import {MANDIRS} from '../../data/staticData';
 
 const MandirScreen: React.FC = () => {
   const {t, isHindi} = useI18n();

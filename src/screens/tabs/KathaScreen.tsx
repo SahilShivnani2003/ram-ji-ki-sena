@@ -7,8 +7,8 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import {useI18n} from '../i18n';
-import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../theme';
+import {useI18n} from '../../i18n';
+import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../../theme';
 import {
   GradientHeader,
   Badge,
@@ -17,8 +17,8 @@ import {
   PrimaryButton,
   SectionHeader,
   StarRating,
-} from '../components';
-import {KATHA_EVENTS, KATHAVACHAKS} from '../data/staticData';
+} from '../../components';
+import {KATHA_EVENTS, KATHAVACHAKS} from '../../data/staticData';
 
 const KathaScreen: React.FC = () => {
   const {t, isHindi} = useI18n();

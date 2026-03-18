@@ -7,16 +7,16 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import {useI18n} from '../i18n';
-import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../theme';
+import {useI18n} from '../../i18n';
+import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../../theme';
 import {
   GradientHeader,
   Badge,
   StarRating,
   PrimaryButton,
   SectionHeader,
-} from '../components';
-import {PANDITS, POOJA_TYPES} from '../data/staticData';
+} from '../../components';
+import {PANDITS, POOJA_TYPES} from '../../data/staticData';
 
 const PanditScreen: React.FC = () => {
   const {t, isHindi} = useI18n();
