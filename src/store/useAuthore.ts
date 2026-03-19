@@ -2,34 +2,34 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { create } from "zustand";
 
 interface AuthInterface {
-    company: any;
+    user: any;
     isAuthenticated: boolean;
     token: string | null;
-    login: (company: any | null, token: string | any) => void;
-    loadCompany: () => Promise<void>;
+    login: (user: any | null, token: string | any) => void;
+    loadUser: () => Promise<void>;
     logOut: () => void;
 }
 
 export const useAuthStore = create<AuthInterface>((set) => ({
-    company: null,
+    user: null,
     isAuthenticated: false,
     token: null,
-    login: async (company, token) => {
-        if (company && token) {
-            await AsyncStorage.setItem('auth', JSON.stringify({ company, token }));
+    login: async (user, token) => {
+        if (user && token) {
+            await AsyncStorage.setItem('auth', JSON.stringify({ user, token }));
 
-            set({ company: company, isAuthenticated: true, token: token });
+            set({ user: user, isAuthenticated: true, token: token });
         }
     },
-    loadCompany: async () => {
+    loadUser: async () => {
         const auth = JSON.parse(await AsyncStorage.getItem('auth') || '{}');
         if (auth) {
-            set({ company: auth?.company, isAuthenticated: true, token: auth?.token })
+            set({ user: auth?.company, isAuthenticated: true, token: auth?.token })
         }
     },
     logOut: async () => {
         await AsyncStorage.removeItem('auth');
 
-        set({ company: null, isAuthenticated: false, token: null })
+        set({ user: null, isAuthenticated: false, token: null })
     }
 }))

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "../store/useAuthore";
 
-const BASE_URL = 'https://businessnetworkplatform.onrender.com/api/v1';
+const BASE_URL = 'https://ramjikisena-com-new.onrender.com/api';
 
 export const publicClient = axios.create({
     baseURL: BASE_URL,
