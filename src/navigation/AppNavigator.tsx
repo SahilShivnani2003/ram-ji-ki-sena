@@ -12,6 +12,7 @@ import RegisterScreen from '../screens/auth/RegisterScreen';
 import { IDeity } from '../screens/tabs/HomeScreen';
 import { useColorScheme } from 'react-native';
 import NamLekhanScreen from '../screens/NaamLekhanScreen';
+import PanditTabNavigator, { PanditTabParamList } from './PanditTabNavigation';
 
 export type RootParamList = {
   splash: undefined;
@@ -21,6 +22,7 @@ export type RootParamList = {
   forgotPassword: undefined;
   register: undefined;
   namLekhan: { deity: IDeity };
+  pandit: NavigatorScreenParams<PanditTabParamList>;
 };
 
 const Stack = createNativeStackNavigator<RootParamList>();
@@ -43,6 +45,7 @@ const AppNavigator = () => {
         <Stack.Screen name="main" component={TabNavigator} />
         <Stack.Screen name="profile" component={ProfileScreen} />
         <Stack.Screen name="namLekhan" component={NamLekhanScreen} />
+        <Stack.Screen name="pandit" component={PanditTabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

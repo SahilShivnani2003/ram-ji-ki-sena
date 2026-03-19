@@ -19,7 +19,7 @@ export type RootTabParamList = {
 
 // ── Tab config ───────────────────────────────────────────────────────────────
 // All icons from Ionicons — consistent stroke weight, clean at small sizes
-const TABS: Itab[] = [
+const TABS: Itab<RootTabParamList>[] = [
   {
     key: 'Home',
     icon: 'home-outline',
