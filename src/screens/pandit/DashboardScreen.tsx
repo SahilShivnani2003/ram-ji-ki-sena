@@ -116,7 +116,7 @@ const BAR_MAX_H = 64;
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function HomeScreen({ navigation }: Props) {
   const [available, setAvailable] = useState(true);
-
+  
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.secondary} />

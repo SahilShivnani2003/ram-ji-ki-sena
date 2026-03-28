@@ -116,10 +116,12 @@ export default function LoginScreen({ navigation }: Props) {
         animatePress();
         setLoading(true);
         try {
+            debugger
             const response = await authAPI.forgot({ contact: phone });
+            debugger
             if (response.data?.success) {
                 login(response.data?.user, response.data?.token);
-                navigation.replace('main', { screen: 'Home' });
+                navigation.replace('mainDrawer', { screen: 'Home' });
             } else {
                 setErrors(e => ({ ...e, phone: 'Login failed. Please try again.' }));
             }
@@ -166,10 +168,10 @@ export default function LoginScreen({ navigation }: Props) {
         animatePress();
         setLoading(true);
         try {
-            const response = await panditAPI.login({ username: usernameOrPhone, password });
+            const response = await panditAPI.login({ phone: usernameOrPhone, password });
             if (response.data?.success) {
                 login(response.data?.pandit, response.data?.token);
-                navigation.replace('main', { screen: 'Home' });
+                navigation.replace('pandit', { screen: 'Home' });
             } else {
                 Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
             }
@@ -190,7 +192,7 @@ export default function LoginScreen({ navigation }: Props) {
 
     // ── Derived label helpers ─────────────────────────────────────────────────
     const btnLabel =
-        loginFor === 'user' && userMode === 'phone' ? '🙏 SEND LOGIN LINK' : '🙏 JAI SHRI RAM';
+        loginFor === 'user' && userMode === 'phone' ? 'LOGIN' : '🙏 JAI SHRI RAM';
 
     const identifierLabel = loginFor === 'pandit' ? 'Phone / Username' : 'Username';
 

@@ -24,9 +24,10 @@ import { RootParamList } from '../navigation/AppNavigator';
 import { Colors, Fonts, Spacing, BorderRadius, Shadow } from '../theme/index';
 import { DEITIES, IDeity } from '../screens/tabs/HomeScreen';
 import { otherAPI } from '../service/apis/otherServices';
+import { DrawerParamList } from '../navigation/DrawerNavigator';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-type Props = NativeStackScreenProps<RootParamList, 'namLekhan'>;
+type Props = NativeStackScreenProps<DrawerParamList, 'Namlekhan'>;
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get('window');
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -169,14 +170,33 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
     const soundRef = useRef<Sound | null>(null);
 
     useEffect(() => {
+        let currentSound = 'ram.mp3'
+
+        switch (deity.id){
+            case 'ram':
+                currentSound = 'ram.mp3'
+                break;
+            case 'krishna':
+                currentSound = 'krishna.mp3'
+                break;
+            case 'radha':
+                currentSound = 'radhe.mp3'
+                break;
+            case 'shiva':
+                currentSound = 'shiv.mp3'
+                break;
+            case 'hanuman':
+                currentSound = 'hanuman.mp3'
+                break;
+        }
         Sound.setCategory('Playback');
-        soundRef.current = new Sound('shiv.mp3', Sound.MAIN_BUNDLE, err => {
+        soundRef.current = new Sound(currentSound, Sound.MAIN_BUNDLE, err => {
             if (err) console.log('Sound load error:', err);
         });
         return () => {
             soundRef.current?.release();
         };
-    }, []);
+    }, [deity]);
 
     const playSound = useCallback(() => {
         if (!soundOn || !soundRef.current) return;

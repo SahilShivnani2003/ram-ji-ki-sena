@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screens/SplashScreen';
 import TabNavigator, { RootTabParamList } from './TabNavigator';
 import ProfileScreen from '../screens/ProfileScreen';
+import NotificationScreen from '../screens/NotificationScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
@@ -14,17 +15,18 @@ import { useColorScheme } from 'react-native';
 import NamLekhanScreen from '../screens/NaamLekhanScreen';
 import PanditTabNavigator, { PanditTabParamList } from './PanditTabNavigation';
 import PanditRegisterScreen from '../screens/auth/PanditRegiterScreen';
+import DrawerNavigator, { DrawerParamList } from './DrawerNavigator';
 
 export type RootParamList = {
   splash: undefined;
   main: NavigatorScreenParams<RootTabParamList>;
-  profile: undefined;
+  panditRegister: undefined;
+  notifications: undefined;
   login: undefined;
   forgotPassword: undefined;
   register: undefined;
-  namLekhan: { deity: IDeity };
   pandit: NavigatorScreenParams<PanditTabParamList>;
-  panditRegister: undefined;
+  mainDrawer: NavigatorScreenParams<DrawerParamList>;
 };
 
 const Stack = createNativeStackNavigator<RootParamList>();
@@ -44,11 +46,11 @@ const AppNavigator = () => {
         <Stack.Screen name="login" component={LoginScreen} />
         <Stack.Screen name="forgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="register" component={RegisterScreen} />
-        <Stack.Screen name="panditRegister" component={PanditRegisterScreen}/>
         <Stack.Screen name="main" component={TabNavigator} />
-        <Stack.Screen name="profile" component={ProfileScreen} />
-        <Stack.Screen name="namLekhan" component={NamLekhanScreen} />
+        <Stack.Screen name="notifications" component={NotificationScreen} />
         <Stack.Screen name="pandit" component={PanditTabNavigator} />
+        <Stack.Screen name="mainDrawer" component={DrawerNavigator} />
+        <Stack.Screen name="panditRegister" component={PanditRegisterScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

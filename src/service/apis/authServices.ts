@@ -5,7 +5,7 @@ export const authAPI = {
     register: (data: any) => publicClient.post('/register', data),
     me: () => privateClient.get('/me'),
     save: (data: any) => privateClient.post('/save'),
-    forgot: (data: any) => privateClient.post('/forgot'),
+    forgot: (data: any) => privateClient.post('/forgot',data),
     devotes: () => privateClient.get('/devotees'),
     update: (data: any) => privateClient.post('profile/update'),
 

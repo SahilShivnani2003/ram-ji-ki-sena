@@ -18,6 +18,9 @@ import { GradientHeader, Badge, OmSymbol, PrimaryButton } from '../components';
 import { DOHAS, RAM_NAAM_LEADERBOARD } from '../data/staticData';
 import { authAPI } from '../service/apis/authServices';
 import { useAuthStore } from '../store/useAuthore';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootParamList } from '../navigation/AppNavigator';
+import { DrawerParamList } from '../navigation/DrawerNavigator';
 
 // ── API Type ──────────────────────────────────────────────────────────────────
 interface IDailyCount {
@@ -160,8 +163,10 @@ const actStyles = StyleSheet.create({
     barDate: { fontSize: 9, color: Colors.textMuted },
 });
 
+type profileProps = NativeStackScreenProps<DrawerParamList, 'Profile'>;
+
 // ── Main Component ────────────────────────────────────────────────────────────
-const ProfileScreen: React.FC = () => {
+const ProfileScreen = ({ navigation }: profileProps) => {
     const { t, isHindi, language, setLanguage } = useI18n();
     const { logOut } = useAuthStore();
     const [notificationsOn, setNotificationsOn] = useState(true);
@@ -211,7 +216,10 @@ const ProfileScreen: React.FC = () => {
         {
             icon: 'notifications-outline',
             label: t.notifications ?? 'Notifications',
-            onPress: () => Alert.alert('🔔', 'Notifications'),
+            onPress: () =>
+                navigation
+                    .getParent<NativeStackNavigationProp<RootParamList>>()
+                    ?.navigate('notifications'),
         },
     ];
 
@@ -221,7 +229,17 @@ const ProfileScreen: React.FC = () => {
             isHindi ? 'क्या आप लॉगआउट करना चाहते हैं?' : 'Are you sure you want to sign out?',
             [
                 { text: isHindi ? 'रद्द करें' : 'Cancel', style: 'cancel' },
-                { text: isHindi ? 'हाँ' : 'Sign Out', style: 'destructive', onPress: logOut },
+                {
+                    text: isHindi ? 'हाँ' : 'Sign Out',
+                    style: 'destructive',
+                    onPress: () => {
+                        logOut();
+                        navigation.getParent<NativeStackNavigationProp<RootParamList>>().reset({
+                            index: 0,
+                            routes: [{ name: 'login' }],
+                        });
+                    },
+                },
             ],
         );
     };
