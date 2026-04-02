@@ -15,6 +15,10 @@ import { useI18n } from '../../i18n';
 import { Colors, Fonts, Spacing, BorderRadius, Shadow } from '../../theme';
 import { GradientHeader, Badge, StarRating, ChipFilter, PrimaryButton } from '../../components';
 import { mandirAPI } from '../../service/apis/mandirServices';
+import { DrawerScreenProps } from '@react-navigation/drawer';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
+
+type mandirProps = DrawerScreenProps<DrawerParamList, 'Mandir'>;
 
 // ── API Types ─────────────────────────────────────────────────────────────────
 interface IMandir {
@@ -418,7 +422,7 @@ const MandirCard = ({ mandir, isHindi, t }: { mandir: IMandir; isHindi: boolean;
 };
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
-const MandirScreen: React.FC = () => {
+const MandirScreen = ({navigation}:mandirProps) => {
     const { t, isHindi } = useI18n();
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('all');
@@ -480,7 +484,7 @@ const MandirScreen: React.FC = () => {
     // ── Render ────────────────────────────────────────────────────────────────
     return (
         <View style={styles.container}>
-            <GradientHeader title={t.mandirDirectory ?? 'Mandirs'} subtitle="🛕 Temple Directory" />
+            <GradientHeader title={t.mandirDirectory ?? 'Mandirs'} subtitle="🛕 Temple Directory" navigation={navigation} />
 
             {/* Search bar */}
             <View style={styles.searchContainer}>

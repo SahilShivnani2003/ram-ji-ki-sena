@@ -17,7 +17,10 @@ import { Colors, Fonts, Spacing, BorderRadius, Shadow } from '../../theme';
 import { GradientHeader, Badge, StarRating, PrimaryButton, SectionHeader } from '../../components';
 import { POOJA_TYPES } from '../../data/staticData';
 import { panditAPI } from '../../service/apis/panditServices';
+import { DrawerScreenProps } from '@react-navigation/drawer';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
+type panditProps = DrawerScreenProps<DrawerParamList, 'Pandit'>;
 // ── API Types ─────────────────────────────────────────────────────────────────
 interface IPandit {
     _id: string;
@@ -365,7 +368,7 @@ const PanditCard = ({
 };
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
-const PanditScreen: React.FC = () => {
+const PanditScreen  = ({navigation}: panditProps) => {
     const { t, isHindi } = useI18n();
     const [selectedPooja, setSelectedPooja] = useState<string | null>(null);
     const [pandits, setPandits] = useState<IPandit[]>([]);
@@ -416,6 +419,7 @@ const PanditScreen: React.FC = () => {
             <GradientHeader
                 title={t.panditsNearYou ?? 'Pandits Near You'}
                 subtitle="🙏 Pandit Booking"
+                navigation={navigation}
             />
 
             {/* Search bar */}

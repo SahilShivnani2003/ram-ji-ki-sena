@@ -23,8 +23,10 @@ import {
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { RootTabParamList } from '../../navigation/TabNavigator';
 import { kathaVachakAPI } from '../../service/apis/kathaVachakServices';
+import { DrawerScreenProps } from '@react-navigation/drawer';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
-type KathaProps = NativeBottomTabScreenProps<RootTabParamList, 'Katha'>;
+type KathaProps = DrawerScreenProps<DrawerParamList, 'Katha'>;
 
 // ── API Types ─────────────────────────────────────────────────────────────────
 interface ILiveKatha {
@@ -474,7 +476,7 @@ const KathaScreen = ({ navigation }: KathaProps) => {
     // ── Render ────────────────────────────────────────────────────────────────
     return (
         <View style={styles.container}>
-            <GradientHeader title={t.kathaEvents ?? 'Katha Events'} subtitle="📖 Ram Katha" />
+            <GradientHeader title={t.kathaEvents ?? 'Katha Events'} subtitle="📖 Ram Katha" navigation={navigation} />
             <ChipFilter options={tabOptions} selected={tab} onSelect={v => setTab(v as any)} />
 
             <ScrollView showsVerticalScrollIndicator={false}>

@@ -12,8 +12,12 @@ import {useI18n} from '../../i18n';
 import {Colors, Fonts, Spacing, BorderRadius, Shadow} from '../../theme';
 import {GradientHeader, Badge, SectionHeader} from '../../components';
 import {COMMUNITY_POSTS} from '../../data/staticData';
+import { DrawerScreenProps } from '@react-navigation/drawer';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
-const CommunityScreen: React.FC = () => {
+type communityProps = DrawerScreenProps<DrawerParamList, 'Community'>;
+
+const CommunityScreen = ({navigation}: communityProps) => {
   const {t, isHindi} = useI18n();
   const [posts, setPosts] = useState(COMMUNITY_POSTS);
   const [postText, setPostText] = useState('');
@@ -47,7 +51,7 @@ const CommunityScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <GradientHeader title={t.communityFeed} subtitle="🤝 Jai Shri Ram" />
+      <GradientHeader title={t.communityFeed} subtitle="🤝 Jai Shri Ram" navigation={navigation} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Write Post Box */}

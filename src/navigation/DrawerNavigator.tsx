@@ -73,7 +73,7 @@ export default function DrawerNavigator() {
     return (
         <Drawer.Navigator
             drawerContent={props => <CustomDrawerContent {...props} drawerItems={drawerItems} />}
-            screenOptions={{headerShown: false, drawerActiveTintColor: Colors.primary}}
+            screenOptions={{headerShown: false}}
         >
             <Drawer.Screen name="Home" component={HomeScreen} />
             <Drawer.Screen name="Mandir" component={MandirScreen} />

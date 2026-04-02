@@ -21,6 +21,7 @@ import { useAuthStore } from '../store/useAuthore';
 import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootParamList } from '../navigation/AppNavigator';
 import { DrawerParamList } from '../navigation/DrawerNavigator';
+import { DrawerScreenProps } from '@react-navigation/drawer';
 
 // ── API Type ──────────────────────────────────────────────────────────────────
 interface IDailyCount {
@@ -163,7 +164,7 @@ const actStyles = StyleSheet.create({
     barDate: { fontSize: 9, color: Colors.textMuted },
 });
 
-type profileProps = NativeStackScreenProps<DrawerParamList, 'Profile'>;
+type profileProps = DrawerScreenProps<DrawerParamList, 'Profile'>;
 
 // ── Main Component ────────────────────────────────────────────────────────────
 const ProfileScreen = ({ navigation }: profileProps) => {
@@ -266,7 +267,13 @@ const ProfileScreen = ({ navigation }: profileProps) => {
                         <SkeletonBox style={{ height: 13, width: 100, borderRadius: 6 }} />
                     </View>
                 ) : (
-                    <>
+                    <> 
+                        <TouchableOpacity
+                            onPress={() => navigation.toggleDrawer()}
+                            style={styles.iconBtn}
+                        >
+                            <Ionicons name="menu" size={22} color="rgba(255,255,255,0.9)" />
+                        </TouchableOpacity>
                         {/* Avatar circle */}
                         <View style={styles.avatarContainer}>
                             <View style={styles.avatarCircle}>
@@ -555,6 +562,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'relative',
         overflow: 'hidden',
+    },
+    iconBtn: {
+        width: 42,
+        height: 42,
+        borderRadius: 21,
+        backgroundColor: 'rgba(0,0,0,0.25)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0, // ← prevents icon from being squeezed by long mantra text
     },
     omBg: {
         position: 'absolute',

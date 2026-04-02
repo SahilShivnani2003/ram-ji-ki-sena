@@ -195,26 +195,26 @@ const HomeScreen = ({ navigation }: HomeProps) => {
         }
     };
 
-    const quickLinks = [
+    const quickLinks  = [
         {
             icon: 'person',
             label: t.bookPandit,
-            screen: 'Pandits' as keyof RootTabParamList,
+            screen: 'Pandit',
             bg: '#FFF3E0',
         },
         {
             icon: 'cart',
             label: t.orderSamagri,
-            screen: 'Community' as keyof RootTabParamList,
+            screen: 'Community',
             bg: '#E8F5E9',
         },
         {
             icon: 'play-circle',
             label: t.liveDarshan,
-            screen: 'Mandirs' as keyof RootTabParamList,
+            screen: 'Mandir',
             bg: '#E3F2FD',
         },
-    ];
+    ] as const;
 
     // ── Derived user stats ────────────────────────────────────────────────────
     const todayCount = user?.currCount ?? 0;
@@ -235,7 +235,7 @@ const HomeScreen = ({ navigation }: HomeProps) => {
                 colors={selectedDeity.gradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                style={[styles.header, { paddingTop: insets.top + Spacing.sm }]}
+                style={[styles.header]}
             >
                 <View style={styles.headerTop}>
                     <TouchableOpacity
@@ -624,8 +624,6 @@ const styles = StyleSheet.create({
     // Header
     header: {
         paddingBottom: Spacing.md,
-        paddingHorizontal: Spacing.lg,
-        // paddingTop handled dynamically via insets
     },
     headerTop: {
         flexDirection: 'row',
@@ -633,6 +631,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: Spacing.md,
         gap: Spacing.sm,
+        padding: Spacing.lg,
     },
     headerCenter: {
         flex: 1,
