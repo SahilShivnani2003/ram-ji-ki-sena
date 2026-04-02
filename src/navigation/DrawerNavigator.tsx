@@ -1,7 +1,6 @@
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { TouchableOpacity } from 'react-native';
-import HomeScreen, { IDeity } from '../screens/tabs/HomeScreen';
-import NotificationScreen from '../screens/NotificationScreen';
+import HomeScreen from '../screens/tabs/HomeScreen';
 import MandirScreen from '../screens/tabs/MandirScreen';
 import KathaScreen from '../screens/tabs/KathaScreen';
 import PanditScreen from '../screens/tabs/PanditScreen';
@@ -11,6 +10,8 @@ import NamLekhanScreen from '../screens/NaamLekhanScreen';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { CustomDrawerContent } from '../components/ui/CustomDrawerContent';
 import { Colors, Spacing } from '../theme';
+import { IDrawerItem } from '../types/IDrawerItems';
+import { IDeity } from '../types/IDeity';
 
 export type DrawerParamList = {
     Home: undefined;
@@ -22,43 +23,57 @@ export type DrawerParamList = {
     Namlekhan: { deity: IDeity };
 };
 
+const drawerItems: IDrawerItem[] = [
+    {
+        key: 'Home',
+        icon: 'home-outline',
+        iconActive: 'home',
+        label: 'home',
+    },
+    {
+        key: 'Mandir',
+        icon: 'business-outline',
+        iconActive: 'business',
+        label: 'mandirs',
+    },
+    {
+        key: 'Katha',
+        icon: 'book-outline',
+        iconActive: 'book',
+        label: 'katha',
+    },
+    {
+        key: 'Pandit',
+        icon: 'person-outline',
+        iconActive: 'person',
+        label: 'pandits',
+    },
+    {
+        key: 'Community',
+        icon: 'people-outline',
+        iconActive: 'people',
+        label: 'community',
+    },
+    {
+        key: 'Profile',
+        icon: 'person-circle-outline',
+        iconActive: 'person-circle',
+        label: 'profile',
+    },
+    {
+        key: 'Namlekhan',
+        icon: 'document-text-outline',
+        iconActive: 'document-text',
+        label: 'Naam Lekhan',
+    },
+];
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
 export default function DrawerNavigator() {
     return (
         <Drawer.Navigator
-            drawerContent={(props) => <CustomDrawerContent {...props} />}
-            screenOptions={({ navigation }) => ({
-                headerStyle: {
-                    backgroundColor: Colors.cardBg,
-                    elevation: 4,
-                    shadowColor: Colors.secondary,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                },
-                headerTintColor: Colors.textPrimary,
-                headerTitleStyle: {
-                    fontWeight: 'bold',
-                    fontSize: 18,
-                },
-                headerLeft: () => (
-                    <TouchableOpacity
-                        onPress={() => navigation.toggleDrawer()}
-                        style={{
-                            marginLeft: Spacing.lg,
-                            padding: Spacing.sm,
-                            borderRadius: 8,
-                        }}
-                    >
-                        <Ionicons
-                            name="menu"
-                            size={24}
-                            color={Colors.primary}
-                        />
-                    </TouchableOpacity>
-                ),
-            })}
+            drawerContent={props => <CustomDrawerContent {...props} drawerItems={drawerItems} />}
+            screenOptions={{headerShown: false, drawerActiveTintColor: Colors.primary}}
         >
             <Drawer.Screen name="Home" component={HomeScreen} />
             <Drawer.Screen name="Mandir" component={MandirScreen} />

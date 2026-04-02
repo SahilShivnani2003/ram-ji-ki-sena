@@ -7,7 +7,7 @@ export default function App() {
   const isDark = useColorScheme() === 'dark';
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} >
         <I18nProvider>
           <StatusBar barStyle={isDark ? 'light-content' : 'dark-content'} />
           <AppNavigator/>

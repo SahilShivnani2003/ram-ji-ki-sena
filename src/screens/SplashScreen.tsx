@@ -207,7 +207,8 @@ const SplashScreen = ({ navigation }: SplashProps) => {
         await loadUser();
         const { user, isAuthenticated } = useAuthStore.getState();
         if (isAuthenticated) {
-            navigation.replace(user?.role === 'pandit' ? 'pandit' : 'main', { screen: 'Home' });
+            // navigation.replace(user?.role === 'pandit' ? 'pandit' : 'main', { screen: 'Home' });
+            navigation.replace('mainDrawer', { screen: 'Home' });
         } else {
             navigation.replace('login');
         }
