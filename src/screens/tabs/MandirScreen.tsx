@@ -29,28 +29,53 @@ interface IMandir {
     photos: string[];
     averageRating: number;
     createdAt: string;
+    __v: number;
+
     festivals: any[];
     nearbyAttractions: any[];
+    videos: any[];
+    languages: string[];
+
+    status: string;
+    submittedBy: string | null;
+    rejectionReason: string;
+    significance: string;
+    templeType: string;
+    architecture: string;
+    builtYear: string;
+
     location: {
+        country: string;
         address: string;
         city: string;
         state: string;
     };
+
     timing: {
-        opening: string; // "HH:MM" 24h
-        closing: string; // "HH:MM" 24h
-        aarti: string[]; // e.g. ["8:00 PM"]
+        opening: string;
+        closing: string;
+        aarti: {
+            [key: string]: string;
+            _id: string;
+        }[];
+        specialDays: any[];
     };
+
     contact: {
         phone: string;
         email: string;
         website: string;
     };
+
     deity: {
         main: string;
         others: string[];
     };
+
     facilities: {
+        cloakroom: boolean;
+        medicalAid: boolean;
+        foodStalls: boolean;
         parking: boolean;
         prasad: boolean;
         accommodation: boolean;
@@ -58,12 +83,16 @@ interface IMandir {
         restrooms: boolean;
         drinkingWater: boolean;
     };
+
     visitInfo: {
+        mobileAllowed: boolean;
+        shoeStand: boolean;
         bestTimeToVisit: string;
         dressCode: string;
         entryFee: string;
         photographyAllowed: boolean;
     };
+
     socialMedia: {
         facebook: string;
         instagram: string;
@@ -83,6 +112,14 @@ const fmt24 = (t: string): string => {
     const ampm = h >= 12 ? 'PM' : 'AM';
     const h12 = h % 12 === 0 ? 12 : h % 12;
     return `${h12}:${m} ${ampm}`;
+};
+
+const formatAartiTime = (aarti: Record<string, string>) => {
+    return Object.keys(aarti)
+        .filter((key) => key !== "_id")
+        .sort((a, b) => Number(a) - Number(b))
+        .map((key) => aarti[key])
+        .join("");
 };
 
 /** Check if open right now */
@@ -159,17 +196,17 @@ const MandirCard = ({ mandir, isHindi, t }: { mandir: IMandir; isHindi: boolean;
     const freeEntry = isFreeEntry(mandir.visitInfo?.entryFee);
 
     const handleCall = () =>
-        mandir.contact?.phone && Linking.openURL(`tel:${mandir.contact.phone}`).catch(() => {});
+        mandir.contact?.phone && Linking.openURL(`tel:${mandir.contact.phone}`).catch(() => { });
 
     const handleWebsite = () =>
-        mandir.contact?.website && Linking.openURL(mandir.contact.website).catch(() => {});
+        mandir.contact?.website && Linking.openURL(mandir.contact.website).catch(() => { });
 
     const handleDirections = () => {
         const q = encodeURIComponent(mandir.location?.address ?? mandir.name);
-        Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${q}`).catch(() => {});
+        Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${q}`).catch(() => { });
     };
 
-    const handleSocial = (url: string) => url && Linking.openURL(url).catch(() => {});
+    const handleSocial = (url: string) => url && Linking.openURL(url).catch(() => { });
 
     return (
         <TouchableOpacity
@@ -234,9 +271,14 @@ const MandirCard = ({ mandir, isHindi, t }: { mandir: IMandir; isHindi: boolean;
                     <Text style={styles.timingText}>
                         {fmt24(mandir.timing?.opening)} – {fmt24(mandir.timing?.closing)}
                     </Text>
-                    {mandir.timing?.aarti?.length > 0 && (
-                        <Text style={styles.aartiText}>🪔 {mandir.timing.aarti[0]}</Text>
-                    )}
+                    {/* {mandir.timing?.aarti?.length > 0 && (
+                        <Text style={styles.aartiText}>🪔 {mandir.timing.aarti.}</Text>
+                    )} */}
+                    {mandir.timing.aarti.map((aarti) => (
+                        <View key={aarti._id}>
+                            <Text>{formatAartiTime(aarti)}</Text>
+                        </View>
+                    ))}
                 </View>
 
                 {/* ── Facilities row ── */}
@@ -422,7 +464,7 @@ const MandirCard = ({ mandir, isHindi, t }: { mandir: IMandir; isHindi: boolean;
 };
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
-const MandirScreen = ({navigation}:mandirProps) => {
+const MandirScreen = ({ navigation }: mandirProps) => {
     const { t, isHindi } = useI18n();
     const [search, setSearch] = useState('');
     const [filter, setFilter] = useState('all');

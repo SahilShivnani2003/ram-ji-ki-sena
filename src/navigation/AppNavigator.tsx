@@ -10,7 +10,6 @@ import NotificationScreen from '../screens/NotificationScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
-import { IDeity } from '../screens/tabs/HomeScreen';
 import { useColorScheme } from 'react-native';
 import NamLekhanScreen from '../screens/NaamLekhanScreen';
 import PanditTabNavigator, { PanditTabParamList } from './PanditTabNavigation';

@@ -111,67 +111,67 @@ const RevolvingRing: React.FC<{
     dotColor1 = 'rgba(212,160,23,0.3)',
     dotColor2 = 'rgba(43,191,223,0.2)',
 }) => {
-    const rotate = useRef(new Animated.Value(0)).current;
+        const rotate = useRef(new Animated.Value(0)).current;
 
-    useEffect(() => {
-        const anim = Animated.loop(
-            Animated.timing(rotate, {
-                toValue: clockwise ? 1 : -1,
-                duration: 10000,
-                useNativeDriver: true,
-                easing: Easing.linear,
-            }),
+        useEffect(() => {
+            const anim = Animated.loop(
+                Animated.timing(rotate, {
+                    toValue: clockwise ? 1 : -1,
+                    duration: 10000,
+                    useNativeDriver: true,
+                    easing: Easing.linear,
+                }),
+            );
+            const t = setTimeout(() => anim.start(), delay);
+            return () => {
+                clearTimeout(t);
+                anim.stop();
+            };
+        }, []);
+
+        const spin = rotate.interpolate({
+            inputRange: [-1, 0, 1],
+            outputRange: ['-360deg', '0deg', '360deg'],
+        });
+        const dotCount = radius > 90 ? 8 : 6;
+
+        return (
+            <Animated.View
+                pointerEvents="none"
+                style={{
+                    position: 'absolute',
+                    width: radius * 2,
+                    height: radius * 2,
+                    borderRadius: radius,
+                    borderWidth: 0.6,
+                    borderColor: 'rgba(212,160,23,0.12)',
+                    transform: [{ rotate: spin }],
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                {Array.from({ length: dotCount }).map((_, i) => {
+                    const angle = (i / dotCount) * 2 * Math.PI;
+                    const dx = radius + radius * Math.cos(angle) - 3;
+                    const dy = radius + radius * Math.sin(angle) - 3;
+                    return (
+                        <View
+                            key={i}
+                            style={{
+                                position: 'absolute',
+                                left: dx,
+                                top: dy,
+                                width: 5,
+                                height: 5,
+                                borderRadius: 2.5,
+                                backgroundColor: i % 2 === 0 ? dotColor1 : dotColor2,
+                            }}
+                        />
+                    );
+                })}
+            </Animated.View>
         );
-        const t = setTimeout(() => anim.start(), delay);
-        return () => {
-            clearTimeout(t);
-            anim.stop();
-        };
-    }, []);
-
-    const spin = rotate.interpolate({
-        inputRange: [-1, 0, 1],
-        outputRange: ['-360deg', '0deg', '360deg'],
-    });
-    const dotCount = radius > 90 ? 8 : 6;
-
-    return (
-        <Animated.View
-            pointerEvents="none"
-            style={{
-                position: 'absolute',
-                width: radius * 2,
-                height: radius * 2,
-                borderRadius: radius,
-                borderWidth: 0.6,
-                borderColor: 'rgba(212,160,23,0.12)',
-                transform: [{ rotate: spin }],
-                alignItems: 'center',
-                justifyContent: 'center',
-            }}
-        >
-            {Array.from({ length: dotCount }).map((_, i) => {
-                const angle = (i / dotCount) * 2 * Math.PI;
-                const dx = radius + radius * Math.cos(angle) - 3;
-                const dy = radius + radius * Math.sin(angle) - 3;
-                return (
-                    <View
-                        key={i}
-                        style={{
-                            position: 'absolute',
-                            left: dx,
-                            top: dy,
-                            width: 5,
-                            height: 5,
-                            borderRadius: 2.5,
-                            backgroundColor: i % 2 === 0 ? dotColor1 : dotColor2,
-                        }}
-                    />
-                );
-            })}
-        </Animated.View>
-    );
-};
+    };
 
 // ── Main ──────────────────────────────────────────────────────────────────────
 const SplashScreen = ({ navigation }: SplashProps) => {
@@ -207,10 +207,10 @@ const SplashScreen = ({ navigation }: SplashProps) => {
         await loadUser();
         const { user, isAuthenticated } = useAuthStore.getState();
         if (isAuthenticated) {
-            // navigation.replace(user?.role === 'pandit' ? 'pandit' : 'main', { screen: 'Home' });
-            navigation.replace('mainDrawer', { screen: 'Home' });
+            navigation.replace(user?.role === 'pandit' ? 'pandit' : 'mainDrawer', { screen: 'Home' });
+            // navigation.replace('mainDrawer', { screen: 'Home' });
         } else {
-            navigation.replace('login');
+            navigation.replace('main', { screen: 'Namlekhan', params: { deity: undefined } });
         }
     };
 

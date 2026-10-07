@@ -20,7 +20,7 @@ export type DrawerParamList = {
     Pandit: undefined;
     Community: undefined;
     Profile: undefined;
-    Namlekhan: { deity: IDeity };
+    Namlekhan: { deity?: IDeity };
 };
 
 const drawerItems: IDrawerItem[] = [

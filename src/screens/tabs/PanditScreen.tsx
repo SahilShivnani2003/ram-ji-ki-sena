@@ -22,39 +22,65 @@ import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
 type panditProps = DrawerScreenProps<DrawerParamList, 'Pandit'>;
 // ── API Types ─────────────────────────────────────────────────────────────────
+interface IPanditService {
+    _id: string;
+    poojaType: string;
+    price: number;
+    duration: string;
+    description: string;
+}
+
 interface IPandit {
     _id: string;
     username: string;
     name: string;
+
     photo: string;
     photos: string[];
+
     experience: number;
     specialization: string[];
     languages: string[];
+
+    qualification?: string;
+    about?: string;
+    description?: string;
+
+    services: IPanditService[];
+
     averageRating: number;
     totalBookings: number;
     completedBookings: number;
+
     isVerified: boolean;
     isActive: boolean;
-    about?: string;
-    description?: string;
-    qualification?: string;
-    services: any[];
+
     contact: {
         phone: string;
         email: string;
         whatsapp?: string;
     };
+
     location: {
+        address?: string;
         city: string;
         state: string;
-        address?: string;
+        pincode?: string;
     };
+
     availability: {
+        workingHours?: {
+            start: string;
+            end: string;
+        };
         workingDays: string[];
     };
+
+    user?: string;
+
     createdAt: string;
     updatedAt: string;
+    __v: number;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

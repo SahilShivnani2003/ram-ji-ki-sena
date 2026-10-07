@@ -7,6 +7,8 @@ import PanditScreen from '../screens/tabs/PanditScreen';
 import CommunityScreen from '../screens/tabs/CommunityScreen';
 import { Itab } from '../types/tab.types';
 import { CustomTabBar } from '../components/ui/CustomTabBar';
+import NamLekhanScreen from '../screens/NaamLekhanScreen';
+import { IDeity } from '../types/IDeity';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 export type RootTabParamList = {
@@ -15,16 +17,23 @@ export type RootTabParamList = {
   Katha: undefined;
   Pandits: undefined;
   Community: undefined;
+  Namlekhan: { deity?: IDeity };
 };
 
 // ── Tab config ───────────────────────────────────────────────────────────────
 // All icons from Ionicons — consistent stroke weight, clean at small sizes
 const TABS: Itab<RootTabParamList>[] = [
+  // {
+  //   key: 'Home',
+  //   icon: 'home-outline',
+  //   iconActive: 'home',
+  //   component: HomeScreen,
+  // },
   {
-    key: 'Home',
+    key: 'Namlekhan',
     icon: 'home-outline',
     iconActive: 'home',
-    component: HomeScreen,
+    component: NamLekhanScreen,
   },
   {
     key: 'Mandirs',
@@ -56,7 +65,7 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 
 const TabNavigator: React.FC = () => (
   <Tab.Navigator
-    initialRouteName="Home"
+    initialRouteName="Namlekhan"
     tabBar={props => <CustomTabBar {...props} tabs={TABS} />}
     screenOptions={{ headerShown: false }}
   >

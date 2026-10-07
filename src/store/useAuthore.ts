@@ -22,9 +22,18 @@ export const useAuthStore = create<AuthInterface>((set) => ({
         }
     },
     loadUser: async () => {
-        const auth = JSON.parse(await AsyncStorage.getItem('auth') || '{}');
-        if (auth) {
-            set({ user: auth?.company, isAuthenticated: true, token: auth?.token })
+        const auth = await AsyncStorage.getItem('auth');
+        if (!auth) {
+            set({
+                user: null,
+                isAuthenticated: false,
+                token: null,
+            });
+            return;
+        }
+        const storedAuth = JSON.parse(auth);
+        if (storedAuth) {
+            set({ user: storedAuth.user, isAuthenticated: true, token: storedAuth.token })
         }
     },
     logOut: async () => {

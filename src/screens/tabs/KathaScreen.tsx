@@ -31,17 +31,22 @@ type KathaProps = DrawerScreenProps<DrawerParamList, 'Katha'>;
 // ── API Types ─────────────────────────────────────────────────────────────────
 interface ILiveKatha {
     _id: string;
+
     addressLine1: string;
-    addressLine2: string;
+    addressLine2?: string;
+
     city: string;
     state: string;
     country: string;
     pincode: string;
+
     startDate: string;
-    endDate: string | null;
+    endDate: string;
+
     liveLink: string;
     kathaType: string;
     isActive: boolean;
+
     createdAt: string;
     updatedAt: string;
 }
@@ -49,29 +54,39 @@ interface ILiveKatha {
 interface IKathaVachak {
     _id: string;
     id: string;
+
     name: string;
     photo: string;
+    photos: string[];
+
     experience: number;
     specialization: string;
     description: string;
-    isLive: boolean;
-    averageRating: number;
-    reviews: any[];
+
     liveKathas: ILiveKatha[];
+
+    reviews: any[];
+    averageRating: number;
+
+    isLive: boolean;
+
     contact: {
         phone: string;
         email: string;
         whatsapp: string;
     };
+
     socialMedia: {
-        facebook: string;
-        instagram: string;
-        youtube: string;
-        twitter: string;
+        facebook?: string;
+        instagram?: string;
+        youtube?: string;
+        twitter?: string;
     };
-    photos: string[];
+
     createdAt: string;
     updatedAt: string;
+
+    __v: number;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -129,19 +144,19 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
 
     const handleWatch = () => {
         if (activeKatha?.liveLink) {
-            Linking.openURL(activeKatha.liveLink).catch(() => {});
+            Linking.openURL(activeKatha.liveLink).catch(() => { });
         }
     };
 
     const handleCall = () => {
         if (vachak.contact?.phone) {
-            Linking.openURL(`tel:${vachak.contact.phone}`).catch(() => {});
+            Linking.openURL(`tel:${vachak.contact.phone}`).catch(() => { });
         }
     };
 
     const handleWhatsApp = () => {
         if (vachak.contact?.whatsapp) {
-            Linking.openURL(`https://wa.me/91${vachak.contact.whatsapp}`).catch(() => {});
+            Linking.openURL(`https://wa.me/91${vachak.contact.whatsapp}`).catch(() => { });
         }
     };
 
@@ -195,8 +210,8 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
                                 backgroundColor: vachak.isLive
                                     ? '#FFEBEE'
                                     : ongoing
-                                    ? '#E8F5E9'
-                                    : '#FFF3E0',
+                                        ? '#E8F5E9'
+                                        : '#FFF3E0',
                             },
                         ]}
                     >
@@ -207,8 +222,8 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
                                     backgroundColor: vachak.isLive
                                         ? Colors.error
                                         : ongoing
-                                        ? Colors.success
-                                        : Colors.warning,
+                                            ? Colors.success
+                                            : Colors.warning,
                                 },
                             ]}
                         />
@@ -219,18 +234,18 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
                                     color: vachak.isLive
                                         ? Colors.error
                                         : ongoing
-                                        ? Colors.success
-                                        : Colors.warning,
+                                            ? Colors.success
+                                            : Colors.warning,
                                 },
                             ]}
                         >
                             {vachak.isLive
                                 ? 'LIVE NOW'
                                 : ongoing
-                                ? 'ONGOING'
-                                : upcoming
-                                ? 'UPCOMING'
-                                : 'ACTIVE'}
+                                    ? 'ONGOING'
+                                    : upcoming
+                                        ? 'UPCOMING'
+                                        : 'ACTIVE'}
                         </Text>
                     </View>
                 </View>
@@ -327,7 +342,7 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
                 <View style={styles.socialIcons}>
                     {vachak.socialMedia?.youtube ? (
                         <TouchableOpacity
-                            onPress={() => Linking.openURL(vachak.socialMedia.youtube)}
+                            onPress={() => Linking.openURL(vachak?.socialMedia?.youtube ?? '')}
                             style={styles.socialIcon}
                         >
                             <Ionicons name="logo-youtube" size={18} color="#FF0000" />
@@ -335,7 +350,7 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
                     ) : null}
                     {vachak.socialMedia?.instagram ? (
                         <TouchableOpacity
-                            onPress={() => Linking.openURL(vachak.socialMedia.instagram)}
+                            onPress={() => Linking.openURL(vachak?.socialMedia?.instagram ?? '')}
                             style={styles.socialIcon}
                         >
                             <Ionicons name="logo-instagram" size={18} color="#E1306C" />
@@ -343,7 +358,7 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
                     ) : null}
                     {vachak.socialMedia?.facebook ? (
                         <TouchableOpacity
-                            onPress={() => Linking.openURL(vachak.socialMedia.facebook)}
+                            onPress={() => Linking.openURL(vachak?.socialMedia?.facebook ?? '')}
                             style={styles.socialIcon}
                         >
                             <Ionicons name="logo-facebook" size={18} color="#1877F2" />
@@ -359,10 +374,10 @@ const KathaVachakCard: React.FC<VachakCardProps> = ({ vachak, isHindi, t }) => {
                         vachak.isLive && activeKatha.liveLink
                             ? t.watchNow
                             : isHindi
-                            ? 'और जानें'
-                            : 'View Details'
+                                ? 'और जानें'
+                                : 'View Details'
                     }
-                    onPress={vachak.isLive && activeKatha.liveLink ? handleWatch : () => {}}
+                    onPress={vachak.isLive && activeKatha.liveLink ? handleWatch : () => { }}
                 />
             )}
         </TouchableOpacity>

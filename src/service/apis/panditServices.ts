@@ -7,7 +7,7 @@ export const panditAPI = {
 
     me: () => privateClient.get('/pandit-auth/me'),
 
-    getAll: (params?: any) => publicClient.get('/pandits/', { params }),
+    getAll: (params?: any) => publicClient.get('pandits?', { params }),
 
     getById: (id: string) => publicClient.get(`/pandits/${id}`),
 
