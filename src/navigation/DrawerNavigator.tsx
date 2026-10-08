@@ -12,6 +12,7 @@ import { CustomDrawerContent } from '../components/ui/CustomDrawerContent';
 import { Colors, Spacing } from '../theme';
 import { IDrawerItem } from '../types/IDrawerItems';
 import { IDeity } from '../types/IDeity';
+import MyBookingsScreen from '../screens/UserBookingScreen';
 
 export type DrawerParamList = {
     Home: undefined;
@@ -21,6 +22,7 @@ export type DrawerParamList = {
     Community: undefined;
     Profile: undefined;
     Namlekhan: { deity?: IDeity };
+    Bookings: undefined;
 };
 
 const drawerItems: IDrawerItem[] = [
@@ -66,6 +68,12 @@ const drawerItems: IDrawerItem[] = [
         iconActive: 'document-text',
         label: 'Naam Lekhan',
     },
+    {
+        key: 'Bookings',
+        icon: 'cart',
+        iconActive: 'cart-outline',
+        label: 'Bookings',
+    },
 ];
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
@@ -73,7 +81,7 @@ export default function DrawerNavigator() {
     return (
         <Drawer.Navigator
             drawerContent={props => <CustomDrawerContent {...props} drawerItems={drawerItems} />}
-            screenOptions={{headerShown: false}}
+            screenOptions={{ headerShown: false }}
         >
             <Drawer.Screen name="Home" component={HomeScreen} />
             <Drawer.Screen name="Mandir" component={MandirScreen} />
@@ -82,6 +90,7 @@ export default function DrawerNavigator() {
             <Drawer.Screen name="Community" component={CommunityScreen} />
             <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="Namlekhan" component={NamLekhanScreen} />
+            <Drawer.Screen name="Bookings" component={MyBookingsScreen} />
         </Drawer.Navigator>
     );
 }

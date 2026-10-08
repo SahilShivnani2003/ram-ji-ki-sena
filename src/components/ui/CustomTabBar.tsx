@@ -139,7 +139,7 @@ const TabItem: React.FC<TabItemProps> = ({
           <Ionicons
             name={(isActive ? iconActive : icon) as any}
             size={23}
-            color={isActive ? Colors.primary : Colors.textMuted}
+            color={isActive ? Colors.darkBg : Colors.textMuted}
           />
         </Animated.View>
       </Animated.View>

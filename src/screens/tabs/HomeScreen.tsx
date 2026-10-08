@@ -90,6 +90,17 @@ export const DEITIES: IDeity[] = [
 ];
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+interface IAarti {
+    [key: string]: string;
+    _id: string;
+}
+const formatAartiTime = (aarti: IAarti) => {
+    return Object.keys(aarti)
+        .filter((key) => key !== "_id")
+        .sort((a, b) => Number(a) - Number(b))
+        .map((key) => aarti[key])
+        .join("");
+};
 
 /** Check if mandir is currently open based on opening/closing times */
 const isMandirOpen = (opening: string, closing: string): boolean => {
@@ -195,7 +206,7 @@ const HomeScreen = ({ navigation }: HomeProps) => {
         }
     };
 
-    const quickLinks  = [
+    const quickLinks = [
         {
             icon: 'person',
             label: t.bookPandit,
@@ -534,7 +545,10 @@ const HomeScreen = ({ navigation }: HomeProps) => {
                 mandirs.slice(0, 3).map(mandir => {
                     const isOpen = isMandirOpen(mandir.timing?.opening, mandir.timing?.closing);
                     const coverPhoto = mandir.photos?.[0];
-                    const nextAarti = mandir.timing?.aarti?.[0];
+                    // const nextAarti = mandir.timing?.aarti?.[0];
+                    const nextAarti = mandir.timing?.aarti?.[0]
+                        ? formatAartiTime(mandir.timing?.aarti[0])
+                        : "";
 
                     return (
                         <TouchableOpacity
@@ -647,7 +661,7 @@ const styles = StyleSheet.create({
         color: Colors.textLight,
         fontSize: Fonts.sizes.xxl, // ← was xxxl, too large on small screens
         fontWeight: '900',
-        letterSpacing: 1,
+        // letterSpacing: 1,
         textAlign: 'center',
     },
     iconBtn: {
@@ -685,7 +699,7 @@ const styles = StyleSheet.create({
         fontSize: 9,
         color: 'rgba(255,255,255,0.65)',
         marginTop: 1,
-        letterSpacing: 0.5,
+        // letterSpacing: 0.5,
     },
     statStripDivider: { width: 1, backgroundColor: 'rgba(255,255,255,0.2)', marginVertical: 4 },
 
@@ -706,7 +720,7 @@ const styles = StyleSheet.create({
         fontSize: Fonts.sizes.xs,
         fontWeight: '700',
         color: Colors.textMuted,
-        letterSpacing: 1.5,
+        // letterSpacing: 1.5,
         textTransform: 'uppercase',
         paddingHorizontal: Spacing.lg,
         marginBottom: Spacing.md,
@@ -755,7 +769,7 @@ const styles = StyleSheet.create({
         color: Colors.goldLight,
         fontSize: Fonts.sizes.xs,
         fontWeight: '700',
-        letterSpacing: 2,
+        // letterSpacing: 2,
     },
     dohaText: {
         color: Colors.goldLight,
@@ -836,7 +850,7 @@ const styles = StyleSheet.create({
         fontSize: Fonts.sizes.sm,
         color: Colors.textLight,
         fontWeight: '700',
-        letterSpacing: 0.5,
+        // letterSpacing: 0.5,
     },
     leaderboardMini: {},
     leaderRow: {

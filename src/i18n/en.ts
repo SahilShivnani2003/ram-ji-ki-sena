@@ -29,7 +29,7 @@ export const en = {
   dohanOfDay: 'Doha of the Day',
   quickLinks: 'Quick Links',
   bookPandit: 'Book Pandit',
-  orderSamagri: 'Order Samagri',
+  orderSamagri: 'My Bookings',
   liveDarshan: 'Live Darshan',
   donate: 'Donate',
   seeAll: 'See All',

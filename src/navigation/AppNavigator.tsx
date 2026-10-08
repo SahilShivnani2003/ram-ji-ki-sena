@@ -15,6 +15,8 @@ import NamLekhanScreen from '../screens/NaamLekhanScreen';
 import PanditTabNavigator, { PanditTabParamList } from './PanditTabNavigation';
 import PanditRegisterScreen from '../screens/auth/PanditRegiterScreen';
 import DrawerNavigator, { DrawerParamList } from './DrawerNavigator';
+import { IUserBooking } from '../types/IBooking';
+import BookingDetailsScreen from '../screens/UserBookingDetailScreen';
 
 export type RootParamList = {
   splash: undefined;
@@ -26,6 +28,12 @@ export type RootParamList = {
   register: undefined;
   pandit: NavigatorScreenParams<PanditTabParamList>;
   mainDrawer: NavigatorScreenParams<DrawerParamList>;
+  BookingDetail: {
+    booking: IUserBooking;
+    onClose: () => void;
+    onPressProfile?: (panditId: string) => void;
+    onCancelBooking?: (bookingId: string) => void;
+  }
 };
 
 const Stack = createNativeStackNavigator<RootParamList>();
@@ -50,6 +58,7 @@ const AppNavigator = () => {
         <Stack.Screen name="pandit" component={PanditTabNavigator} />
         <Stack.Screen name="mainDrawer" component={DrawerNavigator} />
         <Stack.Screen name="panditRegister" component={PanditRegisterScreen} />
+        <Stack.Screen name="BookingDetail" component={BookingDetailsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

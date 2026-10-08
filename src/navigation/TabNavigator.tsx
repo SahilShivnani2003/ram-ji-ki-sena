@@ -32,31 +32,31 @@ const TABS: Itab<RootTabParamList>[] = [
   {
     key: 'Namlekhan',
     icon: 'home-outline',
-    iconActive: 'home',
+    iconActive: 'home-outline',
     component: NamLekhanScreen,
   },
   {
     key: 'Mandirs',
     icon: 'business-outline', // clean building silhouette — reads clearly at 23px
-    iconActive: 'business',
+    iconActive: 'business-outline',
     component: MandirScreen,
   },
   {
     key: 'Katha',
     icon: 'book-outline',
-    iconActive: 'book',
+    iconActive: 'book-outline',
     component: KathaScreen,
   },
   {
     key: 'Pandits',
     icon: 'person-outline',
-    iconActive: 'person',
+    iconActive: 'person-outline',
     component: PanditScreen,
   },
   {
     key: 'Community',
     icon: 'people-outline',
-    iconActive: 'people',
+    iconActive: 'people-outline',
     component: CommunityScreen,
   },
 ];
