@@ -20,15 +20,16 @@ import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Sound from 'react-native-sound';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
 import { RootParamList } from '../navigation/AppNavigator';
 import { Colors, Fonts, Spacing, BorderRadius, Shadow } from '../theme/index';
 import { DEITIES } from '../screens/tabs/HomeScreen';
-import {IDeity} from '../types/IDeity';
+import { IDeity } from '../types/IDeity';
 import { otherAPI } from '../service/apis/otherServices';
 import { DrawerParamList } from '../navigation/DrawerNavigator';
 import { DrawerScreenProps } from '@react-navigation/drawer';
+import { useAuthStore } from '../store/useAuthore';
+import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type Props = DrawerScreenProps<DrawerParamList, 'Namlekhan'>;
@@ -146,6 +147,7 @@ interface FloatingText {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function NamLekhanScreen({ navigation, route }: Props) {
+    const { isAuthenticated } = useAuthStore();
     const initialDeity = route.params?.deity ?? DEITIES[0];
 
     const [deity, setDeity] = useState<IDeity>(initialDeity);
@@ -469,10 +471,16 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
                 {/* ── Header ── */}
                 <View style={styles.header}>
                     <TouchableOpacity
-                        onPress={() => navigation.toggleDrawer()}
+                        onPress={() => {
+                            if (isAuthenticated) {
+                                navigation.toggleDrawer();
+                            } else {
+                                navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('login');
+                            }
+                        }}
                         style={styles.iconBtn}
                     >
-                        <Ionicons name="menu" size={32} color="rgba(255,255,255,0.9)" />
+                        <Ionicons name={isAuthenticated ? "menu" : "person-outline"} size={32} color="rgba(255,255,255,0.9)" />
                     </TouchableOpacity>
                     <View style={styles.headerCenter}>
                         <Text style={styles.headerTitle}>
@@ -843,8 +851,8 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
                                         style={[
                                             styles.wpThumb,
                                             wallpaper === null &&
-                                                wallpaperGradient[0] === wp.gradient[0] &&
-                                                styles.wpThumbActive,
+                                            wallpaperGradient[0] === wp.gradient[0] &&
+                                            styles.wpThumbActive,
                                         ]}
                                     />
                                     <Text style={styles.wpLabel}>{wp.label}</Text>
