@@ -5,12 +5,15 @@ import BookingsScreen from '../screens/pandit/BookingScreen';
 import EarningsScreen from '../screens/pandit/EarningsScreen';
 import ProfileScreen from '../screens/pandit/PanditProfileScreen';
 import { CustomTabBar } from '../components/ui/CustomTabBar';
+import { IDeity } from '../types/IDeity';
+import NamLekhanScreen from '../screens/NaamLekhanScreen';
 
 export type PanditTabParamList = {
   Home: undefined;
   Bookings: undefined;
   Earnings: undefined;
   Profile: undefined;
+  Namlekhan: { deity?: IDeity };
 };
 
 const panditTabs: Itab<PanditTabParamList>[] = [
@@ -22,21 +25,27 @@ const panditTabs: Itab<PanditTabParamList>[] = [
   },
   {
     key: 'Bookings',
-    icon: 'calender-outline',
-    iconActive: 'calender',
+    icon: 'cart-outline',
+    iconActive: 'cart',
     component: BookingsScreen,
   },
   {
     key: 'Earnings',
-    icon: 'money-outline',
-    iconActive: 'money',
+    icon: 'cash-outline',
+    iconActive: 'cash',
     component: EarningsScreen,
   },
   {
     key: 'Profile',
-    icon: 'user-outline',
-    iconActive: 'user',
+    icon: 'person-outline',
+    iconActive: 'person',
     component: ProfileScreen,
+  },
+  {
+    key: 'Namlekhan',
+    icon: 'document-text-outline',
+    iconActive: 'document-text',
+    component: NamLekhanScreen,
   },
 ];
 const Tab = createBottomTabNavigator<PanditTabParamList>();

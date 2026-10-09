@@ -19,6 +19,9 @@ import { POOJA_TYPES } from '../../data/staticData';
 import { panditAPI } from '../../service/apis/panditServices';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { DrawerParamList } from '../../navigation/DrawerNavigator';
+import { bookingAPI } from '../../service/apis/bookingServices';
+import { ICreateBooking } from '../../types/IBooking';
+import CreateBookingModal from '../CreateBookingModal';
 
 type panditProps = DrawerScreenProps<DrawerParamList, 'Pandit'>;
 // ── API Types ─────────────────────────────────────────────────────────────────
@@ -113,33 +116,41 @@ const PanditCard = ({
     t,
     isHindi,
     selectedPooja,
+    onSave
 }: {
     pandit: IPandit;
     t: any;
     isHindi: boolean;
     selectedPooja: string | null;
+    onSave: (data: ICreateBooking) => Promise<void>;
 }) => {
     const [expanded, setExpanded] = useState(false);
     const available = isAvailableToday(pandit.availability?.workingDays ?? []);
+    const [modalShow, setModalShow] = useState(false);
 
     const handleCall = () =>
-        pandit.contact?.phone && Linking.openURL(`tel:${pandit.contact.phone}`).catch(() => {});
+        pandit.contact?.phone && Linking.openURL(`tel:${pandit.contact.phone}`).catch(() => { });
 
     const handleWhatsApp = () => {
         const num = pandit.contact?.whatsapp ?? pandit.contact?.phone;
-        num && Linking.openURL(`https://wa.me/91${num}`).catch(() => {});
+        num && Linking.openURL(`https://wa.me/91${num}`).catch(() => { });
     };
 
-    const handleBook = () =>
-        Alert.alert(
-            '🙏 ' + (isHindi ? 'बुकिंग की पुष्टि' : 'Booking Confirmed'),
-            isHindi
-                ? `${pandit.name} के साथ बुकिंग हो गई!`
-                : `Booking request sent to ${pandit.name}!`,
-        );
+    const handleBook = () => {
+        setModalShow(true);
+    }
 
     return (
         <View style={styles.panditCard}>
+            <CreateBookingModal
+                visible={modalShow}
+                panditId={pandit._id}
+                onClose={() => setModalShow(false)}
+                onSubmit={onSave}
+                price={0}
+                panditName={pandit.name}
+                platformFee={0}
+            />
             {/* ── Header ── */}
             <View style={styles.panditHeader}>
                 {/* Avatar */}
@@ -394,7 +405,7 @@ const PanditCard = ({
 };
 
 // ── Main Screen ───────────────────────────────────────────────────────────────
-const PanditScreen  = ({navigation}: panditProps) => {
+const PanditScreen = ({ navigation }: panditProps) => {
     const { t, isHindi } = useI18n();
     const [selectedPooja, setSelectedPooja] = useState<string | null>(null);
     const [pandits, setPandits] = useState<IPandit[]>([]);
@@ -417,6 +428,23 @@ const PanditScreen  = ({navigation}: panditProps) => {
             setLoading(false);
         }
     };
+
+    const onSaveBooking = async (data: ICreateBooking): Promise<void> => {
+        try {
+            setLoading(true);
+            const response = await bookingAPI.create(data);
+            if (response.data?.success) {
+                Alert.alert(
+                    '🙏 ' + (isHindi ? 'बुकिंग की पुष्टि' : 'Booking Confirmed'),
+                    isHindi
+                        ? `बुकिंग हो गई!`
+                        : `Booking request sent!`,
+                );
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
 
     // ── Filter ────────────────────────────────────────────────────────────────
     const filtered = pandits.filter(p => {
@@ -582,6 +610,7 @@ const PanditScreen  = ({navigation}: panditProps) => {
                             t={t}
                             isHindi={isHindi}
                             selectedPooja={selectedPooja}
+                            onSave={onSaveBooking}
                         />
                     ))
                 )}

@@ -29,7 +29,7 @@ export const hi = {
   dohanOfDay: 'आज का दोहा',
   quickLinks: 'त्वरित लिंक',
   bookPandit: 'पंडित बुक करें',
-  orderSamagri: 'सामग्री मंगाएं',
+  orderSamagri: 'मेरी बुकिंग',
   liveDarshan: 'लाइव दर्शन',
   donate: 'दान करें',
   seeAll: 'सभी देखें',

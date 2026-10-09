@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,12 +20,13 @@ import {
 import { RootParamList } from '../../navigation/AppNavigator';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { PanditTabParamList } from '../../navigation/PanditTabNavigation';
+import { panditDashboardAPI } from '../../service/apis/panditDashboardService';
 
 type Props = NativeBottomTabScreenProps<PanditTabParamList, 'Earnings'>;
 
 
 // ── Data ──────────────────────────────────────────────────────────────────────
-type MonthKey = 'Jan' | 'Feb' | 'Mar' | 'Apr';
+type MonthKey = 'Oct';
 
 const MONTH_DATA: Record<
   MonthKey,
@@ -39,71 +40,29 @@ const MONTH_DATA: Record<
     weeks: { pct: number; val: string; label: string }[];
   }
 > = {
-  Jan: {
-    total: '₹31,200',
-    pujas: 14,
+  Oct: {
+    total: '0',
+    pujas: 0,
     days: 31,
-    cash: '₹20,000',
-    online: '₹11,200',
-    avg: '₹2,228',
+    cash: '0',
+    online: '0',
+    avg: '0',
     weeks: [
-      { pct: 0.6, val: '₹7.8k', label: 'W1' },
-      { pct: 0.7, val: '₹8.4k', label: 'W2' },
-      { pct: 0.55, val: '₹7.2k', label: 'W3' },
-      { pct: 0.65, val: '₹7.8k', label: 'W4' },
-    ],
-  },
-  Feb: {
-    total: '₹36,400',
-    pujas: 16,
-    days: 28,
-    cash: '₹22,000',
-    online: '₹14,400',
-    avg: '₹2,275',
-    weeks: [
-      { pct: 0.72, val: '₹9.1k', label: 'W1' },
-      { pct: 0.65, val: '₹8.4k', label: 'W2' },
-      { pct: 0.8, val: '₹10.3k', label: 'W3' },
-      { pct: 0.68, val: '₹8.6k', label: 'W4' },
-    ],
-  },
-  Mar: {
-    total: '₹42,800',
-    pujas: 19,
-    days: 28,
-    cash: '₹28,500',
-    online: '₹14,300',
-    avg: '₹2,253',
-    weeks: [
-      { pct: 0.65, val: '₹9.2k', label: 'W1' },
-      { pct: 0.8, val: '₹11.4k', label: 'W2' },
-      { pct: 1.0, val: '₹14.1k', label: 'W3' },
-      { pct: 0.57, val: '₹8.1k', label: 'W4' },
-    ],
-  },
-  Apr: {
-    total: '₹8,100',
-    pujas: 4,
-    days: 19,
-    cash: '₹4,500',
-    online: '₹3,600',
-    avg: '₹2,025',
-    weeks: [
-      { pct: 0.4, val: '₹4.5k', label: 'W1' },
-      { pct: 0.3, val: '₹3.6k', label: 'W2' },
-      { pct: 0.0, val: '', label: 'W3' },
-      { pct: 0.0, val: '', label: 'W4' },
+      { pct: 0, val: '0', label: 'W1' },
+      { pct: 0, val: '0', label: 'W2' },
+      { pct: 0, val: '0', label: 'W3' },
+      { pct: 0, val: '0', label: 'W4' },
     ],
   },
 };
 
-const MONTHS: MonthKey[] = ['Jan', 'Feb', 'Mar', 'Apr'];
+const MONTHS: MonthKey[] = ['Oct'];
 
 const PUJA_BREAKDOWN = [
-  { name: 'Griha Pravesh', count: 5, amount: '₹18,500', pct: 43 },
-  { name: 'Satyanarayan Puja', count: 7, amount: '₹12,600', pct: 29 },
-  { name: 'Vivah Sanskar', count: 2, amount: '₹8,200', pct: 19 },
-  { name: 'Other Pujas', count: 5, amount: '₹3,500', pct: 9 },
+  { name: 'Griha Pravesh', count: 0, amount: '0', pct: 0 },
+  { name: 'Satyanarayan Puja', count: 0, amount: '0', pct: 0 },
+  { name: 'Vivah Sanskar', count: 0, amount: '0', pct: 0 },
+  { name: 'Other Pujas', count: 0, amount: '0', pct: 0 },
 ];
 
 interface Transaction {
@@ -121,48 +80,8 @@ const TRANSACTIONS: Transaction[] = [
     title: 'Satyanarayan Puja',
     sub: 'Ramesh Sharma',
     date: 'Today',
-    amount: '+₹2,100',
+    amount: '0',
     type: 'credit',
-  },
-  {
-    icon: '🏠',
-    title: 'Griha Pravesh',
-    sub: 'Sunita Verma',
-    date: 'Today',
-    amount: '+₹4,500',
-    type: 'credit',
-  },
-  {
-    icon: '💸',
-    title: 'Withdrawal',
-    sub: 'HDFC Bank ···4521',
-    date: 'Yesterday',
-    amount: '-₹5,000',
-    type: 'debit',
-  },
-  {
-    icon: '🔥',
-    title: 'Navratri Havan',
-    sub: 'RWA Sector 11',
-    date: 'Mar 15',
-    amount: '+₹9,000',
-    type: 'credit',
-  },
-  {
-    icon: '💍',
-    title: 'Vivah Panchami',
-    sub: 'Mohit & Priya',
-    date: 'Mar 18',
-    amount: '+₹7,500',
-    type: 'credit',
-  },
-  {
-    icon: '💸',
-    title: 'Withdrawal',
-    sub: 'HDFC Bank ···4521',
-    date: 'Mar 12',
-    amount: '-₹8,000',
-    type: 'debit',
   },
 ];
 
@@ -170,8 +89,22 @@ const BAR_MAX_H = 80;
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function EarningsScreen({ navigation }: Props) {
-  const [activeMonth, setActiveMonth] = useState<MonthKey>('Mar');
-  const data = MONTH_DATA[activeMonth];
+  const [activeMonth, setActiveMonth] = useState<MonthKey>('Oct');
+  const [earningsData, setEarningsData] = useState<any>(null);
+  const data = earningsData || MONTH_DATA[activeMonth];
+
+  useEffect(() => {
+    fetchEarnings();
+  }, []);
+
+  const fetchEarnings = async () => {
+    try {
+      const response = await panditDashboardAPI.earnings();
+      setEarningsData(response.data?.totalEarnings);
+    } catch (error) {
+      console.error('Error fetching earnings:', error);
+    }
+  }
 
   return (
     <View style={styles.root}>
@@ -224,7 +157,7 @@ export default function EarningsScreen({ navigation }: Props) {
           <Text style={styles.heroLabel}>
             Total Earnings · {activeMonth} 2025
           </Text>
-          <Text style={styles.heroAmount}>{data.total}</Text>
+          <Text style={styles.heroAmount}>{data?.total || 0}</Text>
           <Text style={styles.heroPeriod}>
             {data.pujas} pujas completed · {data.days} days
           </Text>

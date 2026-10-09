@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,7 @@ import {
 import { RootParamList } from '../../navigation/AppNavigator';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { PanditTabParamList } from '../../navigation/PanditTabNavigation';
+import { panditDashboardAPI } from '../../service/apis/panditDashboardService';
 
 type Props = NativeBottomTabScreenProps<PanditTabParamList, 'Home'>;
 
@@ -116,7 +117,19 @@ const BAR_MAX_H = 64;
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function HomeScreen({ navigation }: Props) {
   const [available, setAvailable] = useState(true);
-  
+  const [stats, setStats] = useState(STATS);
+  const [upcomingBooking, setUpcomingBooking] = useState();
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    const response = await panditDashboardAPI.stats();
+    setStats(response.data?.stats);
+    setUpcomingBooking(response.data?.upcomingBookings);
+  }
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="light-content" backgroundColor={Colors.secondary} />

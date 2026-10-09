@@ -216,7 +216,7 @@ const HomeScreen = ({ navigation }: HomeProps) => {
         {
             icon: 'cart',
             label: t.orderSamagri,
-            screen: 'Community',
+            screen: 'Bookings',
             bg: '#E8F5E9',
         },
         {

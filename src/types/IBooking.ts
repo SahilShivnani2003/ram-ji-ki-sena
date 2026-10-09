@@ -72,3 +72,34 @@ export interface IUserBooking {
 export interface IUserBookingsResponse {
   bookings: IUserBooking[];
 }
+
+//----------create booking interface
+export interface ICreateBookingLocation {
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  landmark: string;
+}
+
+export interface ICreateBookingRequirements {
+  samagriNeeded: boolean;
+  numberOfPeople: number;
+  specialInstructions: string;
+  language: string;
+}
+
+export interface ICreateBooking {
+  pandit: string;
+  poojaType: string;
+  poojaDate: string;
+  poojaTime: string;
+  duration: string;
+
+  location: ICreateBookingLocation;
+  requirements: ICreateBookingRequirements;
+
+  price: number;
+  platformFee: number;
+  totalAmount: number;
+}

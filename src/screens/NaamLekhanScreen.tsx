@@ -147,7 +147,7 @@ interface FloatingText {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function NamLekhanScreen({ navigation, route }: Props) {
-    const { isAuthenticated } = useAuthStore();
+    const { isAuthenticated, user } = useAuthStore();
     const initialDeity = route.params?.deity ?? DEITIES[0];
 
     const [deity, setDeity] = useState<IDeity>(initialDeity);
@@ -324,6 +324,10 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
     // ── Save ──────────────────────────────────────────────────────────────────
     const handleSave = useCallback(
         async (silent = false) => {
+            if (!isAuthenticated) {
+                Alert.alert('सहेजने के लिए लॉगिन करें', 'कृपया सहेजने के लिए लॉगिन करें।');
+                return;
+            }
             if (saving) return;
             setSaving(true);
             try {
@@ -411,6 +415,14 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
         ]);
     };
 
+    const handleHistory = () => {
+        if (!isAuthenticated) {
+            Alert.alert('सहेजने के लिए लॉगिन करें', 'कृपया सहेजने के लिए लॉगिन करें।');
+            return;
+        }
+        navigation.navigate('Profile');
+    }
+
     // ── Wallpaper picker ──────────────────────────────────────────────────────
     const pickCustomWallpaper = async () => {
         const result = await launchImageLibrary({ mediaType: 'photo', quality: 0.8 });
@@ -470,18 +482,19 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
             <View style={{ flex: 1 }}>
                 {/* ── Header ── */}
                 <View style={styles.header}>
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (isAuthenticated) {
-                                navigation.toggleDrawer();
-                            } else {
-                                navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('login');
-                            }
-                        }}
-                        style={styles.iconBtn}
-                    >
-                        <Ionicons name={isAuthenticated ? "menu" : "person-outline"} size={32} color="rgba(255,255,255,0.9)" />
-                    </TouchableOpacity>
+                    {user?.role !== 'pandit' || user?.role === '' ? (
+                        <TouchableOpacity
+                            onPress={() => {
+                                if (isAuthenticated) {
+                                    navigation.toggleDrawer();
+                                } else {
+                                    navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('login');
+                                }
+                            }}
+                            style={styles.iconBtn}
+                        >
+                            <Ionicons name={isAuthenticated ? "menu" : "person-outline"} size={32} color="rgba(255,255,255,0.9)" />
+                        </TouchableOpacity>) : null}
                     <View style={styles.headerCenter}>
                         <Text style={styles.headerTitle}>
                             {deity.icon} {deity.nameHi}
@@ -638,7 +651,7 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
                             )}
                         </TouchableOpacity>
                     </Animated.View>
-                    <TouchableOpacity style={styles.historyBtn} activeOpacity={0.85}>
+                    <TouchableOpacity style={styles.historyBtn} activeOpacity={0.85} onPress={handleHistory}>
                         <Ionicons name="bar-chart-outline" size={16} color="#fff" />
                         <Text style={styles.historyBtnText}>इतिहास</Text>
                     </TouchableOpacity>

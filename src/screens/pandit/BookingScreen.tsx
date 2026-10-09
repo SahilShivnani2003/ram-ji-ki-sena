@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -20,86 +20,138 @@ import {
 import { RootParamList } from '../../navigation/AppNavigator';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { PanditTabParamList } from '../../navigation/PanditTabNavigation';
+import { panditDashboardAPI } from '../../service/apis/panditDashboardService';
 
 type Props = NativeBottomTabScreenProps<PanditTabParamList, 'Bookings'>
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type BookingStatus = 'confirmed' | 'pending' | 'completed';
 
-interface Booking {
-  id: number;
-  puja: string;
-  person: string;
+// interface Booking {
+//   id: number;
+//   puja: string;
+//   person: string;
+//   address: string;
+//   date: string;
+//   duration: string;
+//   amount: string;
+//   status: BookingStatus;
+// }
+export interface IPanditBookingLocation {
   address: string;
-  date: string;
+  city: string;
+  state: string;
+  pincode: string;
+  landmark: string;
+}
+
+export interface IPanditBookingRequirements {
+  samagriNeeded: boolean;
+  numberOfPeople: number;
+  specialInstructions: string;
+  language: string;
+}
+
+export interface IPanditBookingPayment {
+  status: string;
+}
+
+export interface IPanditBookingUser {
+  _id: string;
+  name: string;
+  city: string;
+  contact: string;
+}
+
+export interface Booking {
+  _id: string;
+  user: IPanditBookingUser;
+  pandit: string;
+
+  poojaType: string;
+  poojaDate: string;
+  poojaTime: string;
   duration: string;
-  amount: string;
-  status: BookingStatus;
+
+  location: IPanditBookingLocation;
+  requirements: IPanditBookingRequirements;
+  payment: IPanditBookingPayment;
+
+  price: number;
+  platformFee: number;
+  totalAmount: number;
+
+  status: string;
+  isReviewed: boolean;
+
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 // ── Data ──────────────────────────────────────────────────────────────────────
-const BOOKINGS: Booking[] = [
-  {
-    id: 1,
-    puja: 'Satyanarayan Puja',
-    person: 'Ramesh Sharma',
-    address: 'Sector 12, Noida',
-    date: 'Today, 9:00 AM',
-    duration: '3 hrs',
-    amount: '₹2,100',
-    status: 'confirmed',
-  },
-  {
-    id: 2,
-    puja: 'Griha Pravesh',
-    person: 'Sunita Verma',
-    address: 'Raj Nagar, Ghaziabad',
-    date: 'Today, 2:00 PM',
-    duration: '5 hrs',
-    amount: '₹4,500',
-    status: 'confirmed',
-  },
-  {
-    id: 3,
-    puja: 'Mundan Sanskar',
-    person: 'Anil Gupta',
-    address: 'Vaishali, Ghaziabad',
-    date: 'Tomorrow, 8:00 AM',
-    duration: '2 hrs',
-    amount: '₹1,800',
-    status: 'pending',
-  },
-  {
-    id: 4,
-    puja: 'Kali Mata Puja',
-    person: 'Deepa Singh',
-    address: 'Indirapuram',
-    date: 'Mar 21, 6:00 PM',
-    duration: '4 hrs',
-    amount: '₹3,200',
-    status: 'pending',
-  },
-  {
-    id: 5,
-    puja: 'Vivah Panchami',
-    person: 'Mohit & Priya',
-    address: 'Greater Noida',
-    date: 'Mar 18, 10:00 AM',
-    duration: '6 hrs',
-    amount: '₹7,500',
-    status: 'completed',
-  },
-  {
-    id: 6,
-    puja: 'Navratri Havan',
-    person: 'RWA Sector 11',
-    address: 'Sector 11, Noida',
-    date: 'Mar 15, 5:00 AM',
-    duration: '8 hrs',
-    amount: '₹9,000',
-    status: 'completed',
-  },
-];
+// const BOOKINGS: Booking[] = [
+//   {
+//     id: 1,
+//     puja: 'Satyanarayan Puja',
+//     person: 'Ramesh Sharma',
+//     address: 'Sector 12, Noida',
+//     date: 'Today, 9:00 AM',
+//     duration: '3 hrs',
+//     amount: '₹2,100',
+//     status: 'confirmed',
+//   },
+//   {
+//     id: 2,
+//     puja: 'Griha Pravesh',
+//     person: 'Sunita Verma',
+//     address: 'Raj Nagar, Ghaziabad',
+//     date: 'Today, 2:00 PM',
+//     duration: '5 hrs',
+//     amount: '₹4,500',
+//     status: 'confirmed',
+//   },
+//   {
+//     id: 3,
+//     puja: 'Mundan Sanskar',
+//     person: 'Anil Gupta',
+//     address: 'Vaishali, Ghaziabad',
+//     date: 'Tomorrow, 8:00 AM',
+//     duration: '2 hrs',
+//     amount: '₹1,800',
+//     status: 'pending',
+//   },
+//   {
+//     id: 4,
+//     puja: 'Kali Mata Puja',
+//     person: 'Deepa Singh',
+//     address: 'Indirapuram',
+//     date: 'Mar 21, 6:00 PM',
+//     duration: '4 hrs',
+//     amount: '₹3,200',
+//     status: 'pending',
+//   },
+//   {
+//     id: 5,
+//     puja: 'Vivah Panchami',
+//     person: 'Mohit & Priya',
+//     address: 'Greater Noida',
+//     date: 'Mar 18, 10:00 AM',
+//     duration: '6 hrs',
+//     amount: '₹7,500',
+//     status: 'completed',
+//   },
+//   {
+//     id: 6,
+//     puja: 'Navratri Havan',
+//     person: 'RWA Sector 11',
+//     address: 'Sector 11, Noida',
+//     date: 'Mar 15, 5:00 AM',
+//     duration: '8 hrs',
+//     amount: '₹9,000',
+//     status: 'completed',
+//   },
+// ];
 
 type Filter = 'all' | BookingStatus;
 const FILTERS: { key: Filter; label: string }[] = [
@@ -135,16 +187,30 @@ const STATUS_CONFIG: Record<
 
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function BookingsScreen({ navigation }: Props) {
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [filter, setFilter] = useState<Filter>('all');
 
+  useEffect(() => {
+    fetchBookings();
+  }, []);
+
+  const fetchBookings = async () => {
+    try {
+      const response = await panditDashboardAPI.bookings();
+      setBookings(response.data?.bookings);
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    }
+  }
+
   const filtered =
-    filter === 'all' ? BOOKINGS : BOOKINGS.filter(b => b.status === filter);
+    filter === 'all' ? bookings : bookings.filter(b => b.status === filter);
 
   const counts = {
-    all: BOOKINGS.length,
-    confirmed: BOOKINGS.filter(b => b.status === 'confirmed').length,
-    pending: BOOKINGS.filter(b => b.status === 'pending').length,
-    completed: BOOKINGS.filter(b => b.status === 'completed').length,
+    all: bookings.length,
+    confirmed: bookings.filter(b => b.status === 'confirmed').length,
+    pending: bookings.filter(b => b.status === 'pending').length,
+    completed: bookings.filter(b => b.status === 'completed').length,
   };
 
   return (
@@ -225,12 +291,12 @@ export default function BookingsScreen({ navigation }: Props) {
           const cfg = STATUS_CONFIG[b.status];
           return (
             <View
-              key={b.id}
+              key={b._id}
               style={[styles.bookingCard, { borderLeftColor: cfg.accent }]}
             >
               {/* Top row */}
               <View style={styles.cardTopRow}>
-                <Text style={styles.pujaName}>{b.puja}</Text>
+                <Text style={styles.pujaName}>{b.poojaType}</Text>
                 <View style={[styles.statusBadge, { backgroundColor: cfg.bg }]}>
                   <Text style={[styles.statusText, { color: cfg.color }]}>
                     {cfg.label}
@@ -245,7 +311,7 @@ export default function BookingsScreen({ navigation }: Props) {
                   size={13}
                   color={Colors.textSecondary}
                 />
-                <Text style={styles.personName}>{b.person}</Text>
+                <Text style={styles.personName}>{b.user.name}</Text>
               </View>
 
               {/* Details */}
@@ -256,7 +322,7 @@ export default function BookingsScreen({ navigation }: Props) {
                     size={12}
                     color={Colors.textMuted}
                   />
-                  <Text style={styles.detailText}>{b.address}</Text>
+                  <Text style={styles.detailText}>{b.location.address}</Text>
                 </View>
                 <View style={styles.detailItem}>
                   <Ionicons
@@ -264,7 +330,7 @@ export default function BookingsScreen({ navigation }: Props) {
                     size={12}
                     color={Colors.textMuted}
                   />
-                  <Text style={styles.detailText}>{b.date}</Text>
+                  <Text style={styles.detailText}>{b.poojaDate}</Text>
                 </View>
                 <View style={styles.detailItem}>
                   <Ionicons
@@ -278,7 +344,7 @@ export default function BookingsScreen({ navigation }: Props) {
 
               {/* Footer */}
               <View style={styles.cardFooter}>
-                <Text style={styles.amount}>{b.amount}</Text>
+                <Text style={styles.amount}>{b.totalAmount}</Text>
                 <View style={styles.actionsRow}>
                   <TouchableOpacity style={styles.btnOutline}>
                     <Text style={styles.btnOutlineText}>Details</Text>
