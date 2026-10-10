@@ -417,7 +417,7 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
 
     const handleHistory = () => {
         if (!isAuthenticated) {
-            Alert.alert('सहेजने के लिए लॉगिन करें', 'कृपया सहेजने के लिए लॉगिन करें।');
+            Alert.alert('इतिहास के लिए लॉगिन करें', 'कृपया इतिहास के लिए लॉगिन करें।');
             return;
         }
         navigation.navigate('Profile');
@@ -488,7 +488,7 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
                                 if (isAuthenticated) {
                                     navigation.toggleDrawer();
                                 } else {
-                                    navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('login');
+                                    navigation.getParent<NativeStackNavigationProp<RootParamList>>().replace('login');
                                 }
                             }}
                             style={styles.iconBtn}

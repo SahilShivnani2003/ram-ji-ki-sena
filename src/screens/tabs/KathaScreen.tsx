@@ -495,6 +495,50 @@ const KathaScreen = ({ navigation }: KathaProps) => {
             <ChipFilter options={tabOptions} selected={tab} onSelect={v => setTab(v as any)} />
 
             <ScrollView showsVerticalScrollIndicator={false}>
+
+
+                {/* ── All Katha Vachaks (horizontal) ── */}
+                <SectionHeader title={t.kathavachak ?? 'Katha Vachaks'} />
+
+                {loading ? (
+                    <ScrollView
+                        horizontal={false}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.miniScroll}
+                    >
+                        {[1, 2, 3].map(i => (
+                            <View key={i} style={styles.miniCard}>
+                                <SkeletonBox
+                                    style={{
+                                        width: '100%',
+                                        height: 80,
+                                        borderRadius: BorderRadius.md,
+                                        marginBottom: 8,
+                                    }}
+                                />
+                                <SkeletonBox style={{ height: 12, marginBottom: 5 }} />
+                                <SkeletonBox style={{ height: 10, width: '70%' }} />
+                            </View>
+                        ))}
+                    </ScrollView>
+                ) : kathaVachaks.length === 0 ? (
+                    <View style={styles.emptyState}>
+                        <Text style={styles.emptyIcon}>🎤</Text>
+                        <Text style={styles.emptyText}>No Katha Vachaks registered yet</Text>
+                    </View>
+                ) : (
+                    <ScrollView
+                        horizontal={false}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.miniScroll}
+                    >
+                        {kathaVachaks.map(v => (
+                            <VachakMiniCard key={v._id} vachak={v} />
+                        ))}
+                    </ScrollView>
+                )}
+
+                <View style={{ height: 90 }} />
                 {/* ── Tab counter pills ── */}
                 <View style={styles.counterRow}>
                     {[
@@ -569,49 +613,6 @@ const KathaScreen = ({ navigation }: KathaProps) => {
                         <KathaVachakCard key={vachak._id} vachak={vachak} isHindi={isHindi} t={t} />
                     ))
                 )}
-
-                {/* ── All Katha Vachaks (horizontal) ── */}
-                <SectionHeader title={t.kathavachak ?? 'Katha Vachaks'} />
-
-                {loading ? (
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.miniScroll}
-                    >
-                        {[1, 2, 3].map(i => (
-                            <View key={i} style={styles.miniCard}>
-                                <SkeletonBox
-                                    style={{
-                                        width: '100%',
-                                        height: 80,
-                                        borderRadius: BorderRadius.md,
-                                        marginBottom: 8,
-                                    }}
-                                />
-                                <SkeletonBox style={{ height: 12, marginBottom: 5 }} />
-                                <SkeletonBox style={{ height: 10, width: '70%' }} />
-                            </View>
-                        ))}
-                    </ScrollView>
-                ) : kathaVachaks.length === 0 ? (
-                    <View style={styles.emptyState}>
-                        <Text style={styles.emptyIcon}>🎤</Text>
-                        <Text style={styles.emptyText}>No Katha Vachaks registered yet</Text>
-                    </View>
-                ) : (
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={styles.miniScroll}
-                    >
-                        {kathaVachaks.map(v => (
-                            <VachakMiniCard key={v._id} vachak={v} />
-                        ))}
-                    </ScrollView>
-                )}
-
-                <View style={{ height: 90 }} />
             </ScrollView>
         </View>
     );
