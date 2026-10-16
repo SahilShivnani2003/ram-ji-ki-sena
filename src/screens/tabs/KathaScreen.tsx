@@ -402,25 +402,29 @@ const VachakMiniCard: React.FC<{ vachak: IKathaVachak }> = ({ vachak }) => {
                     <View style={styles.liveDot} />
                 </View>
             )}
-            <Text style={styles.miniName} numberOfLines={2}>
-                {vachak.name}
-            </Text>
-            <Text style={styles.miniSpec} numberOfLines={1}>
-                {vachak.specialization}
-            </Text>
-            <Text style={styles.miniExp}>{vachak.experience} yrs</Text>
-            {vachak.averageRating > 0 && <StarRating rating={vachak.averageRating} size={10} />}
-            {activeKatha && (
-                <View style={styles.miniKathaBox}>
-                    <Text style={styles.miniKathaLabel}>Katha:</Text>
-                    <Text style={styles.miniKathaVal} numberOfLines={1}>
-                        {activeKatha.kathaType}
+            <View style={[{flexDirection: 'row', flex:1, justifyContent: 'space-between'}, styles.miniKathaBox]}>
+                <View>
+                    <Text style={styles.miniName} numberOfLines={2}>
+                        {vachak.name}
                     </Text>
-                    <Text style={styles.miniKathaLoc} numberOfLines={1}>
-                        📍 {activeKatha.city}
+                    <Text style={styles.miniSpec} numberOfLines={1}>
+                        {vachak.specialization}
                     </Text>
+                    <Text style={styles.miniExp}>{vachak.experience} yrs</Text>
+                    {vachak.averageRating > 0 && <StarRating rating={vachak.averageRating} size={10} />}
                 </View>
-            )}
+                {activeKatha && (
+                    <View >
+                        <Text style={styles.miniKathaLabel}>Katha:</Text>
+                        <Text style={styles.miniKathaVal} numberOfLines={1}>
+                            {activeKatha.kathaType}
+                        </Text>
+                        <Text style={styles.miniKathaLoc} numberOfLines={1}>
+                            📍 {activeKatha.city}
+                        </Text>
+                    </View>
+                )}
+            </View>
         </TouchableOpacity>
     );
 };
@@ -538,7 +542,7 @@ const KathaScreen = ({ navigation }: KathaProps) => {
                     </ScrollView>
                 )}
 
-                <View style={{ height: 90 }} />
+                {/* <View style={{ height: 90 }} /> */}
                 {/* ── Tab counter pills ── */}
                 <View style={styles.counterRow}>
                     {[
@@ -783,11 +787,11 @@ const styles = StyleSheet.create({
     // Mini card (horizontal)
     miniScroll: { paddingHorizontal: Spacing.lg, paddingBottom: Spacing.md },
     miniCard: {
-        width: 150,
+        // width: 150,
         backgroundColor: Colors.cardBg,
         borderRadius: BorderRadius.lg,
         padding: Spacing.md,
-        marginRight: Spacing.md,
+        marginBottom: Spacing.md,
         alignItems: 'center',
         borderWidth: 1,
         borderColor: Colors.border,
@@ -796,7 +800,7 @@ const styles = StyleSheet.create({
     },
     miniPhoto: {
         width: '100%',
-        height: 80,
+        height: 150,
         borderRadius: BorderRadius.md,
         backgroundColor: Colors.saffronBg,
         marginBottom: Spacing.sm,
@@ -814,7 +818,7 @@ const styles = StyleSheet.create({
         fontSize: Fonts.sizes.sm,
         fontWeight: '800',
         color: Colors.textPrimary,
-        textAlign: 'center',
+        // textAlign: 'center',
         marginBottom: 2,
     },
     miniSpec: {

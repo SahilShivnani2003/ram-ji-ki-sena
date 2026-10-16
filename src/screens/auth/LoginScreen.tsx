@@ -147,7 +147,7 @@ export default function LoginScreen({ navigation }: Props) {
             const response = await authAPI.login({ username: usernameOrPhone, password });
             if (response.data?.success) {
                 login(response.data?.user, response.data?.token);
-                navigation.replace('main', { screen: 'Home' });
+                navigation.replace('mainDrawer', { screen: 'Home' });
             } else {
                 Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
             }
@@ -193,14 +193,14 @@ export default function LoginScreen({ navigation }: Props) {
         setLoading(true);
         try {
             const response = await astrologerApi.login({ phone: usernameOrPhone, password });
-            if (response.data?.success) {
-                login(response.data?.astrologer, response.data?.token);
-                navigation.replace('AstroHome');
+            if (response.success) {
+                login(response?.astrologer, response?.token);
+                navigation.replace('AstroHome', {id: response?.astrologer._id});
             } else {
                 Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
             }
         } catch (error: any) {
-            Alert.alert('Error', error?.response?.data?.message ?? 'Something went wrong.');
+            Alert.alert('Error', error?.response?.data?.message ?? error?.message ?? 'Something went wrong.');
         } finally {
             setLoading(false);
         }

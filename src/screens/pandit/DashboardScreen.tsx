@@ -1018,7 +1018,7 @@ export default function HomeScreen(_props: Props) {
           </View>
 
           {/* ── Quick Actions ── */}
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          {/* <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.card}>
             <View style={styles.quickActionsRow}>
               {QUICK_ACTIONS.map(a => (
@@ -1032,7 +1032,7 @@ export default function HomeScreen(_props: Props) {
                 </TouchableOpacity>
               ))}
             </View>
-          </View>
+          </View> */}
 
           {/* ── Upcoming Bookings ── */}
           <Text style={styles.sectionTitle}>Upcoming Bookings</Text>

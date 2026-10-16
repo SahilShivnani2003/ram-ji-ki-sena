@@ -13,7 +13,7 @@ import AstrologersScreen from '../screens/astrologer/AstrologerScreen';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 export type RootTabParamList = {
-  Home: undefined;
+  // Home: undefined;
   Mandirs: undefined;
   Katha: undefined;
   Pandits: undefined;

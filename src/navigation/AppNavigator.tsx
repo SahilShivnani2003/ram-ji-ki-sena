@@ -39,7 +39,9 @@ export type RootParamList = {
     onCancelBooking?: (bookingId: string) => void;
   };
   AstrologerRegister: undefined;
-  AstroHome: undefined;
+  AstroHome: {
+    id: string;
+  };
   AstroDetail: {
     astrologer: IAstrologer
   };

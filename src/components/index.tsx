@@ -253,7 +253,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         marginLeft: 3,
     },
-    chipRow: { flexDirection: 'row', paddingHorizontal: Spacing.lg, marginBottom: Spacing.md },
+    chipRow: { flexDirection: 'row', paddingHorizontal: Spacing.lg, marginBottom: Spacing.md, marginTop: 5, marginHorizontal: 35 },
     chip: {
         paddingHorizontal: Spacing.md,
         paddingVertical: Spacing.xs,

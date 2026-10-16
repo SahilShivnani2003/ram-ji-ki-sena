@@ -15,6 +15,7 @@ import {
   TextInput,
   useWindowDimensions,
   View,
+  TouchableOpacity
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -25,6 +26,7 @@ import { NativeStackScreenProps, NativeStackNavigationProp } from '@react-naviga
 import { RootParamList } from '../../navigation/AppNavigator';
 import { useI18n } from '../../i18n';
 import { useAuthStore } from '../../store/useAuthore';
+import { OmSymbol } from '../../components';
 
 type AstrologerHomeProps = NativeStackScreenProps<RootParamList, 'AstroHome'>
 
@@ -46,6 +48,69 @@ const demoStats: IAstrologerDashboardStats = {
   estimatedEarnings: 0,
   availabilityStatus: "online",
   isVerified: false
+}
+
+const demoAstro: IAstrologerProfile = {
+  _id: "",
+  username: "",
+  password: "",
+  name: "",
+  tagline: "",
+  photo: "",
+  photos: [],
+  about: "",
+  contact: {
+    phone: "",
+    email: "",
+    whatsapp: ""
+  },
+  location: {
+    address: "",
+    city: "",
+    state: ""
+  },
+  experience: 22,
+  specialties: [
+    "",
+    "",
+    "",
+    ""
+  ],
+  languages: [
+    "Hindi",
+    "Sanskrit"
+  ],
+  qualifications: "",
+  fee: 501,
+  feePerMinute: 15,
+  services: [
+    {
+      title: "",
+      price: 0,
+      duration: "",
+      type: "Call",
+      description: "",
+      _id: ""
+    }
+  ],
+  reviews: [
+    {
+      userName: "",
+      rating: 5,
+      comment: "",
+      topic: "",
+      _id: "",
+      createdAt: ""
+    }
+  ],
+  averageRating: 0,
+  totalConsultations: 0,
+  isVerified: true,
+  isActive: true,
+  availabilityStatus: 'offline',
+  createdAt: "",
+  updatedAt: "",
+  __v: 0
 }
 
 /**
@@ -136,8 +201,7 @@ const formatSchedule = (iso: string): string => {
 };
 
 const getInitials = (name: string): string =>
-  name
-    .replace(/^pt\.?\s*/i, '')
+  name?.replace(/^pt\.?\s*/i, '')
     .split(' ')
     .filter(Boolean)
     .slice(0, 2)
@@ -589,10 +653,11 @@ const SettingsForm = ({ astrologer }: SettingsFormProps) => {
 };
 
 
-export default function AstrologerHomeScreen({ navigation }: AstrologerHomeProps) {
+export default function AstrologerHomeScreen({ navigation, route }: AstrologerHomeProps) {
+  const { id } = route.params;
   const [stats, setStats] = useState<IAstrologerDashboardStats>(demoStats);
   const [consultations, setConsultations] = useState([]);
-  const [astrologer, setAstrologer] = useState(null);
+  const [astrologer, setAstrologer] = useState<IAstrologerProfile>(demoAstro);
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
@@ -616,8 +681,10 @@ export default function AstrologerHomeScreen({ navigation }: AstrologerHomeProps
       setIsLoading(true);
       const response = await astrologerApi.stats();
       const res = await astrologerApi.astroConsultation();
+      const astro = await astrologerApi.profile(id);
       setStats(response?.stats);
       setConsultations(res?.consultations);
+      setAstrologer(astro?.astrologer);
 
     } catch (error: any) {
       throw error;
@@ -674,10 +741,8 @@ export default function AstrologerHomeScreen({ navigation }: AstrologerHomeProps
           style: 'destructive',
           onPress: () => {
             logOut();
-            navigation.getParent<NativeStackNavigationProp<RootParamList>>().reset({
-              index: 0,
-              routes: [{ name: 'login' }],
-            });
+            // navigation.getParent<NativeStackNavigationProp<RootParamList>>().replace('login');
+            navigation.replace('login');
           },
         },
       ],
@@ -685,49 +750,72 @@ export default function AstrologerHomeScreen({ navigation }: AstrologerHomeProps
   };
 
   /* ---------------------------- loading / error ---------------------------- */
-  if (!astrologer || !stats) {
-    return (
-      <View style={[styles.root, styles.centerState]}>
-        <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
-        {isLoading ? (
-          <>
-            <ActivityIndicator size="large" color={Colors.primary} />
-            <Text style={styles.stateSub}>Loading your dashboard…</Text>
-          </>
-        ) : (
-          <>
-            <Ionicons name="cloud-offline-outline" size={44} color={Colors.textMuted} />
-            <Text style={styles.stateTitle}>Couldn't load your dashboard</Text>
-            <Text style={styles.stateSub}>{errorMessage ?? 'Please check your connection.'}</Text>
-            {onRetry ? (
-              <Pressable
-                onPress={onRetry}
-                accessibilityRole="button"
-                accessibilityLabel="Try again"
-                style={({ pressed }) => [styles.retryBtn, pressed && { opacity: 0.85 }]}
-              >
-                <Text style={styles.retryText}>Try again</Text>
-              </Pressable>
-            ) : null}
-          </>
-        )}
-      </View>
-    );
-  }
+  // if (!astrologer || !stats) {
+  //   return (
+  //     <View style={[styles.root, styles.centerState]}>
+  //       <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
+  //       {isLoading ? (
+  //         <>
+  //           <ActivityIndicator size="large" color={Colors.primary} />
+  //           <Text style={styles.stateSub}>Loading your dashboard…</Text>
+  //         </>
+  //       ) : (
+  //         <>
+  //           <Ionicons name="cloud-offline-outline" size={44} color={Colors.textMuted} />
+  //           <Text style={styles.stateTitle}>Couldn't load your dashboard</Text>
+  //           <Text style={styles.stateSub}>{errorMessage ?? 'Please check your connection.'}</Text>
+  //           {onRetry ? (
+  //             <Pressable
+  //               onPress={onRetry}
+  //               accessibilityRole="button"
+  //               accessibilityLabel="Try again"
+  //               style={({ pressed }) => [styles.retryBtn, pressed && { opacity: 0.85 }]}
+  //             >
+  //               <Text style={styles.retryText}>Try again</Text>
+  //             </Pressable>
+  //           ) : null}
+  //         </>
+  //       )}
+  //     </View>
+  //   );
+  // }
 
-  // const specialty = astrologer.specialties[0];
-  // const extraSpecialties = astrologer.specialties.length - 1;
-  // const locationLine = [
-  //   [astrologer.location.city, astrologer.location.state].filter(Boolean).join(', '),
-  //   specialty ? `${specialty}${extraSpecialties > 0 ? ` +${extraSpecialties}` : ''}` : '',
-  // ]
+  const specialty = astrologer?.specialties[0];
+  const extraSpecialties = astrologer?.specialties.length - 1;
+  const locationLine = [
+    [astrologer?.location.city, astrologer?.location.state].filter(Boolean).join(', '),
+    specialty ? `${specialty}${extraSpecialties > 0 ? ` +${extraSpecialties}` : ''}` : '',
+  ]
   //   .filter(Boolean)
   //   .join(' • ');
 
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={Colors.background} />
+      {/* ── Header ─────────────────────────────────────────────────────── */}
+      <LinearGradient
+        colors={Colors.gradientDark}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+      // style={[styles.header]}
+      >
+        <View style={styles.headerTop}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('main', { screen: 'Namlekhan', params: { deity: undefined } })}
+            style={styles.iconBtn}
+          >
+            <Ionicons name="home-outline" size={24} color={Colors.goldDark} />
+          </TouchableOpacity>
 
+          <TouchableOpacity
+            style={styles.iconBtn}
+            onPress={handleLogout}
+          >
+            <Ionicons name="log-out-outline" size={24} color={Colors.goldDark} />
+          </TouchableOpacity>
+        </View>
+        {/* ...rest of header children unchanged... */}
+      </LinearGradient>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -761,16 +849,16 @@ export default function AstrologerHomeScreen({ navigation }: AstrologerHomeProps
               <View style={styles.flex}>
                 <Text style={styles.heroEyebrow}>Jai Shri Ram • Astrologer dashboard</Text>
                 <Text style={styles.heroTitle} numberOfLines={2}>
-                  Welcome
-                  {/* {astrologer.name} */}
+                  Welcome,
+                  {astrologer?.name}
                 </Text>
-                {/* {locationLine ? <Text style={styles.heroSub}>{locationLine}</Text> : null} */}
+                {locationLine ? <Text style={styles.heroSub}>{locationLine}</Text> : null}
               </View>
-              {/* <Avatar photo={astrologer.photo} name={astrologer.name} /> */}
+              <Avatar photo={astrologer?.photo} name={astrologer?.name} />
             </View>
 
             <View style={styles.heroActions}>
-              <Pressable
+              {/* <Pressable
                 onPress={() => onViewPublicProfile(astrologer)}
                 accessibilityRole="button"
                 accessibilityLabel="View public profile"
@@ -778,7 +866,7 @@ export default function AstrologerHomeScreen({ navigation }: AstrologerHomeProps
               >
                 <Text style={styles.ghostBtnText}>View public profile</Text>
                 <Ionicons name="chevron-forward" size={16} color={Colors.textLight} />
-              </Pressable>
+              </Pressable> */}
 
               {stats.isVerified ? (
                 <View style={styles.verifiedChip}>
@@ -886,6 +974,35 @@ export default function AstrologerHomeScreen({ navigation }: AstrologerHomeProps
 }
 
 const styles = StyleSheet.create({
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center', // ← was 'flex-start', caused vertical misalignment
+    justifyContent: 'space-between',
+    marginBottom: Spacing.md,
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: 3
+  },
+  iconBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0, // ← prevents icon from being squeezed by long mantra text
+  },
+  omCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255,255,255,0.35)',
+    flexShrink: 0, // ← same, prevents squeezing
+  },
   root: { flex: 1, backgroundColor: Colors.background },
   flex: { flex: 1 },
   scroll: {

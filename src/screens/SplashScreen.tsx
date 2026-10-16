@@ -207,8 +207,15 @@ const SplashScreen = ({ navigation }: SplashProps) => {
         await loadUser();
         const { user, isAuthenticated } = useAuthStore.getState();
         if (isAuthenticated) {
-            navigation.replace(user?.role === 'pandit' ? 'pandit' : 'mainDrawer', { screen: 'Home' });
+            // navigation.replace(user?.role === 'pandit' ? 'pandit' : 'mainDrawer', { screen: 'Home' });
             // navigation.replace('mainDrawer', { screen: 'Home' });
+            if (user.role === 'pandit') {
+                navigation.replace('pandit', { screen: 'Home' });
+            } else if (user.role === 'astrologer') {
+                navigation.replace('AstroHome', {id: user._id});
+            } else {
+                navigation.replace('mainDrawer', { screen: 'Home' });
+            }
         } else {
             navigation.replace('main', { screen: 'Namlekhan', params: { deity: undefined } });
         }

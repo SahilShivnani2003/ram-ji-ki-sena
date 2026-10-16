@@ -485,15 +485,17 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
                     {user?.role !== 'pandit' || user?.role === '' ? (
                         <TouchableOpacity
                             onPress={() => {
-                                if (isAuthenticated) {
+                                if (isAuthenticated && user?.role === 'user') {
                                     navigation.toggleDrawer();
+                                } else if (isAuthenticated && user?.role === 'astrologer') {
+                                    navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('AstroHome', { id: user._id });
                                 } else {
                                     navigation.getParent<NativeStackNavigationProp<RootParamList>>().replace('login');
                                 }
                             }}
                             style={styles.iconBtn}
                         >
-                            <Ionicons name={isAuthenticated ? "menu" : "person-outline"} size={32} color="rgba(255,255,255,0.9)" />
+                            <Ionicons name={isAuthenticated && user.role === 'user' ? "menu" : "person-outline"} size={32} color="rgba(255,255,255,0.9)" />
                         </TouchableOpacity>) : null}
                     <View style={styles.headerCenter}>
                         <Text style={styles.headerTitle}>
