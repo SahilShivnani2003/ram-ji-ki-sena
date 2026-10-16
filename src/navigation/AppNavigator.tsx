@@ -17,6 +17,10 @@ import PanditRegisterScreen from '../screens/auth/PanditRegiterScreen';
 import DrawerNavigator, { DrawerParamList } from './DrawerNavigator';
 import { IUserBooking } from '../types/IBooking';
 import BookingDetailsScreen from '../screens/UserBookingDetailScreen';
+import AstrologerRegisterScreen from '../screens/auth/AstrologerRegisterScreen';
+import AstrologerHomeScreen from '../screens/astrologer/AstrologerHome';
+import AstrologerDetailScreen from '../screens/astrologer/AstroDetail';
+import { IAstrologer } from '../types/IAstrologer';
 
 export type RootParamList = {
   splash: undefined;
@@ -33,7 +37,12 @@ export type RootParamList = {
     onClose: () => void;
     onPressProfile?: (panditId: string) => void;
     onCancelBooking?: (bookingId: string) => void;
-  }
+  };
+  AstrologerRegister: undefined;
+  AstroHome: undefined;
+  AstroDetail: {
+    astrologer: IAstrologer
+  };
 };
 
 const Stack = createNativeStackNavigator<RootParamList>();
@@ -59,6 +68,9 @@ const AppNavigator = () => {
         <Stack.Screen name="mainDrawer" component={DrawerNavigator} />
         <Stack.Screen name="panditRegister" component={PanditRegisterScreen} />
         <Stack.Screen name="BookingDetail" component={BookingDetailsScreen} />
+        <Stack.Screen name="AstrologerRegister" component={AstrologerRegisterScreen} />
+        <Stack.Screen name='AstroHome' component={AstrologerHomeScreen} />
+        <Stack.Screen name="AstroDetail" component={AstrologerDetailScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,5 +1,10 @@
 import { PermissionsAndroid, Platform } from 'react-native';
-import messaging from '@react-native-firebase/messaging';
+// import messaging from '@react-native-firebase/messaging';
+import {
+      getMessaging,
+      requestPermission,
+      AuthorizationStatus,
+} from '@react-native-firebase/messaging';
 
 export default async function requestNotificationPermission(): Promise<boolean> {
       try {
@@ -12,25 +17,31 @@ export default async function requestNotificationPermission(): Promise<boolean> 
                         );
 
                         if (grant === PermissionsAndroid.RESULTS.GRANTED) {
-                              const authStatus = await messaging().requestPermission();
+                              const messagingInstance = getMessaging();
+                              const authStatus = await requestPermission(messagingInstance,);
+                              // const authStatus = await messaging().requestPermission();
                               enabled =
-                                    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-                                    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+                                    authStatus === AuthorizationStatus.AUTHORIZED ||
+                                    authStatus === AuthorizationStatus.PROVISIONAL;
                         } else {
                               return false;
                         }
                   } else {
                         // Android < 13 (auto granted)
-                        const authStatus = await messaging().requestPermission();
+                        const messagingInstance = getMessaging();
+                        const authStatus = await requestPermission(messagingInstance,);
+                        // const authStatus = await messaging().requestPermission();
                         enabled =
-                              authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-                              authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+                              authStatus === AuthorizationStatus.AUTHORIZED ||
+                              authStatus === AuthorizationStatus.PROVISIONAL;
                   }
             } else if (Platform.OS === 'ios') {
-                  const authStatus = await messaging().requestPermission();
+                  const messagingInstance = getMessaging();
+                  const authStatus = await requestPermission(messagingInstance,);
+                  // const authStatus = await messaging().requestPermission();
                   enabled =
-                        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-                        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+                        authStatus === AuthorizationStatus.AUTHORIZED ||
+                        authStatus === AuthorizationStatus.PROVISIONAL;
             }
 
             return enabled;

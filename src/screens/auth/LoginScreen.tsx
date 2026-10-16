@@ -20,9 +20,10 @@ import { RootParamList } from '../../navigation/AppNavigator';
 import { authAPI } from '../../service/apis/authServices';
 import { useAuthStore } from '../../store/useAuthore';
 import { panditAPI } from '../../service/apis/panditServices';
+import { astrologerApi } from '../../service/apis/astroServices';
 
 type Props = NativeStackScreenProps<RootParamList, 'login'>;
-type LoginFor = 'user' | 'pandit';
+type LoginFor = 'user' | 'pandit' | 'astrologer';
 
 // ── Validation ────────────────────────────────────────────────────────────────
 const validate = {
@@ -182,12 +183,38 @@ export default function LoginScreen({ navigation }: Props) {
         }
     };
 
+    const handleAstrologerLogin = async () => {
+        setTouched({ identifier: true, phone: false, password: true });
+        const identifierErr = validate.usernameOrPhone(usernameOrPhone);
+        const passwordErr = validate.password(password);
+        setErrors(e => ({ ...e, identifier: identifierErr, password: passwordErr }));
+        if (identifierErr || passwordErr) return;
+        animatePress();
+        setLoading(true);
+        try {
+            const response = await astrologerApi.login({ phone: usernameOrPhone, password });
+            if (response.data?.success) {
+                login(response.data?.astrologer, response.data?.token);
+                navigation.replace('AstroHome');
+            } else {
+                Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
+            }
+        } catch (error: any) {
+            Alert.alert('Error', error?.response?.data?.message ?? 'Something went wrong.');
+        } finally {
+            setLoading(false);
+        }
+    }
+
     // ── Unified submit ────────────────────────────────────────────────────────
     const handleSubmit = () => {
         if (loginFor === 'user') {
             return userMode === 'phone' ? handleUserPhoneLogin() : handleUserPasswordLogin();
+        } else if (loginFor === 'astrologer') {
+            return handleAstrologerLogin();
+        } else {
+            return handlePanditLogin();
         }
-        return handlePanditLogin();
     };
 
     // ── Derived label helpers ─────────────────────────────────────────────────
@@ -289,6 +316,29 @@ export default function LoginScreen({ navigation }: Props) {
                                     <View style={styles.roleTabInactive}>
                                         <Text style={styles.roleTabEmoji}>🔱</Text>
                                         <Text style={styles.roleTabTextInactive}>Pandit Ji</Text>
+                                    </View>
+                                )}
+                            </TouchableOpacity>
+                            {/* Astrologer Tab */}
+                            <TouchableOpacity
+                                style={styles.roleTabWrap}
+                                onPress={() => switchRole('astrologer')}
+                                activeOpacity={0.8}
+                            >
+                                {loginFor === 'astrologer' ? (
+                                    <LinearGradient
+                                        colors={Colors.gradientRam as string[]}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 0 }}
+                                        style={styles.roleTabActive}
+                                    >
+                                        <Text style={styles.roleTabEmoji}>🙏</Text>
+                                        <Text style={styles.roleTabTextActive}>Astrologer</Text>
+                                    </LinearGradient>
+                                ) : (
+                                    <View style={styles.roleTabInactive}>
+                                        <Text style={styles.roleTabEmoji}>🙏</Text>
+                                        <Text style={styles.roleTabTextInactive}>Astrologer</Text>
                                     </View>
                                 )}
                             </TouchableOpacity>
@@ -445,6 +495,58 @@ export default function LoginScreen({ navigation }: Props) {
                             </>
                         )}
 
+                        {/* Astro: username/phone + pwd */}
+                        {loginFor === 'astrologer' && (
+                            <>
+                                <Field
+                                    label={identifierLabel}
+                                    icon="person-outline"
+                                    placeholder={identifierPlaceholder}
+                                    value={usernameOrPhone}
+                                    onChangeText={handleIdentifierChange}
+                                    onBlur={() => {
+                                        setTouched(t => ({ ...t, identifier: true }));
+                                        setErrors(e => ({
+                                            ...e,
+                                            identifier: validate.usernameOrPhone(usernameOrPhone),
+                                        }));
+                                    }}
+                                    error={touched.identifier ? errors.identifier : ''}
+                                    returnKeyType="next"
+                                    autoCapitalize="none"
+                                    keyboardType={
+                                        /^\d+$/.test(usernameOrPhone) ? 'phone-pad' : 'default'
+                                    }
+                                />
+                                <Field
+                                    label="Password"
+                                    icon="lock-closed-outline"
+                                    placeholder="Enter your password"
+                                    secureTextEntry={!showPass}
+                                    trailingIcon={showPass ? 'eye-off-outline' : 'eye-outline'}
+                                    onTrailingPress={() => setShowPass(p => !p)}
+                                    value={password}
+                                    onChangeText={handlePasswordChange}
+                                    onBlur={() => {
+                                        setTouched(t => ({ ...t, password: true }));
+                                        setErrors(e => ({
+                                            ...e,
+                                            password: validate.password(password),
+                                        }));
+                                    }}
+                                    error={touched.password ? errors.password : ''}
+                                    returnKeyType="done"
+                                    onSubmitEditing={handleSubmit}
+                                />
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('forgotPassword')}
+                                    style={styles.forgotWrap}
+                                >
+                                    <Text style={styles.forgotText}>Forgot Password?</Text>
+                                </TouchableOpacity>
+                            </>
+                        )}
+
                         {/* ── Submit Button ── */}
                         <Animated.View style={{ transform: [{ scale: btnScale }] }}>
                             <TouchableOpacity
@@ -524,6 +626,14 @@ export default function LoginScreen({ navigation }: Props) {
                         <View style={styles.bottomRow}>
                             <Text style={styles.bottomText}>New pandit? </Text>
                             <TouchableOpacity onPress={() => navigation.navigate('panditRegister')}>
+                                <Text style={styles.bottomLink}>Register Here</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                    {loginFor === 'astrologer' && (
+                        <View style={styles.bottomRow}>
+                            <Text style={styles.bottomText}>New astrologer? </Text>
+                            <TouchableOpacity onPress={() => navigation.navigate('AstrologerRegister')}>
                                 <Text style={styles.bottomLink}>Register Here</Text>
                             </TouchableOpacity>
                         </View>

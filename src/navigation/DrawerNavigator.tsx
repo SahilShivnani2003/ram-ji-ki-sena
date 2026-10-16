@@ -13,6 +13,7 @@ import { Colors, Spacing } from '../theme';
 import { IDrawerItem } from '../types/IDrawerItems';
 import { IDeity } from '../types/IDeity';
 import MyBookingsScreen from '../screens/UserBookingScreen';
+import AstrologersScreen from '../screens/astrologer/AstrologerScreen';
 
 export type DrawerParamList = {
     Home: undefined;
@@ -23,6 +24,7 @@ export type DrawerParamList = {
     Profile: undefined;
     Namlekhan: { deity?: IDeity };
     Bookings: undefined;
+    Astrologer: undefined;
 };
 
 const drawerItems: IDrawerItem[] = [
@@ -91,6 +93,7 @@ export default function DrawerNavigator() {
             <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="Namlekhan" component={NamLekhanScreen} />
             <Drawer.Screen name="Bookings" component={MyBookingsScreen} />
+            <Drawer.Screen name="Astrologer" component={AstrologersScreen} />
         </Drawer.Navigator>
     );
 }

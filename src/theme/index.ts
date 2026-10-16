@@ -111,3 +111,63 @@ export const Shadow = {
     elevation: 10,
   },
 };
+
+// site theme
+
+// export const Colors = {
+//   // Brand colors
+//   primary: '#6D1E1E',
+//   primaryDark: '#5B1801',
+//   primaryLight: '#B22222',
+
+//   secondary: '#F4DF87',
+//   secondaryLight: '#E7D58A',
+
+//   accent: '#FBAA01',
+//   accentDark: '#EC971F',
+//   accentRed: '#FF0000',
+//   accentOrange: '#FF4500',
+
+//   // Backgrounds and surfaces
+//   background: '#FFFFFF',
+//   surface: '#FFFFFF',
+//   surfaceSecondary: '#F2F2F2',
+//   surfaceAlternate: '#F9F9F9',
+//   inputBackground: '#FFFFFF',
+
+//   // Text
+//   textPrimary: '#3F3F46',
+//   textSecondary: '#71717A',
+//   textOnPrimary: '#FFFFFF',
+//   textOnAccent: '#783205',
+//   textAccent: '#B22222',
+
+//   // Borders and separators
+//   border: '#DDDDDD',
+//   borderLight: '#D1D5DB',
+//   borderDark: '#CBCACA',
+
+//   // Interactive states
+//   focus: '#3B82F6',
+//   error: '#DC2626',
+//   scrollbarThumb: '#929090',
+
+//   // Gold button gradient
+//   goldGradient: [
+//     '#A54E07',
+//     '#B47E11',
+//     '#FEF1A2',
+//     '#BC881B',
+//     '#A54E07',
+//   ],
+
+//   // Shadows and overlays
+//   shadow: 'rgba(0, 0, 0, 0.19)',
+//   shadowDark: 'rgba(0, 0, 0, 0.23)',
+//   shadowSoft: 'rgba(0, 0, 0, 0.16)',
+//   shadowGold: 'rgba(110, 80, 20, 0.4)',
+//   goldGlow: 'rgba(250, 227, 133, 1)',
+//   goldInset: 'rgba(139, 66, 8, 1)',
+//   goldBorder: 'rgba(165, 93, 7, 0.6)',
+// }
+

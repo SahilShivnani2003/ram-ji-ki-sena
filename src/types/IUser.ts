@@ -25,3 +25,17 @@ export interface IUser {
         _id: string;
     }[];
 }
+
+export interface IDailyCount {
+    _id: string;
+    date: string;
+    count: number;
+}
+
+export interface IDevotee {
+    _id: string;
+    name: string;
+    rank: number;
+    totalCount: number;
+    dailyCounts: IDailyCount[];
+}

@@ -9,6 +9,7 @@ import { Itab } from '../types/tab.types';
 import { CustomTabBar } from '../components/ui/CustomTabBar';
 import NamLekhanScreen from '../screens/NaamLekhanScreen';
 import { IDeity } from '../types/IDeity';
+import AstrologersScreen from '../screens/astrologer/AstrologerScreen';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 export type RootTabParamList = {
@@ -18,6 +19,7 @@ export type RootTabParamList = {
   Pandits: undefined;
   Community: undefined;
   Namlekhan: { deity?: IDeity };
+  Astrologers: undefined;
 };
 
 // ── Tab config ───────────────────────────────────────────────────────────────
@@ -58,6 +60,12 @@ const TABS: Itab<RootTabParamList>[] = [
     icon: 'people-outline',
     iconActive: 'people-outline',
     component: CommunityScreen,
+  },
+  {
+    key: 'Astrologers',
+    icon: 'people-outline',
+    iconActive: 'people-outline',
+    component: AstrologersScreen,
   },
 ];
 
