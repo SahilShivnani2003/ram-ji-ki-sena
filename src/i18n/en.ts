@@ -117,6 +117,11 @@ export const en = {
   bhakt: 'Bhakt',
   mahabhakt: 'MahaBhakt',
   ramBhakt: 'Ram Bhakt',
+  allDevotees: 'All Devotees',
+  terms: 'Terms & Conditions',
+  privacy: 'Privacy Policy',
+  about: 'About Us',
+  blog: 'Blogs',
 
   // Donation
   donateTitle: 'Donate',

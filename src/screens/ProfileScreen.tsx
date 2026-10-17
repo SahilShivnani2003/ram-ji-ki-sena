@@ -9,6 +9,7 @@ import {
     Switch,
     Animated,
     StatusBar,
+    Linking,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -202,18 +203,28 @@ const ProfileScreen = ({ navigation }: profileProps) => {
     const joinedYear = user ? getJoinedYear(user._id) : '—';
     const firstName = user?.name?.split(' ')[0] ?? '';
 
+    const handleRedirect = (uri: string) => {
+        if (uri === '') {
+            Alert.alert('Site Page not exist')
+            return;
+        }
+        Linking.openURL(uri);
+    }
+
     const menuItems = [
         {
             icon: 'clipboard-outline',
-            label: t.myBookings ?? 'My Bookings',
-            onPress: () => Alert.alert('📋', 'My Bookings'),
+            label: t.allDevotees ?? 'All Devotees',
+            onPress: () => navigation
+                .getParent<NativeStackNavigationProp<RootParamList>>()
+                ?.navigate('Devotees'),
         },
-        {
-            icon: 'heart-outline',
-            label: t.myDonations ?? 'My Donations',
-            onPress: () => Alert.alert('💛', 'My Donations'),
-        },
-        { icon: 'call-outline', label: `📞 ${user?.contact ?? '—'}`, onPress: () => {} },
+        // {
+        //     icon: 'heart-outline',
+        //     label: t.myDonations ?? 'My Donations',
+        //     onPress: () => Alert.alert('💛', 'My Donations'),
+        // },
+        // { icon: 'call-outline', label: `📞 ${user?.contact ?? '—'}`, onPress: () => { } },
         {
             icon: 'notifications-outline',
             label: t.notifications ?? 'Notifications',
@@ -222,6 +233,30 @@ const ProfileScreen = ({ navigation }: profileProps) => {
                     .getParent<NativeStackNavigationProp<RootParamList>>()
                     ?.navigate('notifications'),
         },
+    ];
+
+    const redirectMenuItems = [
+        {
+            icon: 'bookmark-outline',
+            label: t.blog ?? 'Blogs',
+            onPress: () => handleRedirect('https://jaishriramnaam.com/blogs'),
+        },
+        {
+            icon: 'document-lock-outline',
+            label: t.terms ?? 'Terms & Conditions',
+            onPress: () => handleRedirect(''),
+        },
+
+        {
+            icon: 'shield-half-outline',
+            label: t.privacy ?? 'Privacy Policy',
+            onPress: () => handleRedirect(''),
+        },
+        {
+            icon: 'people-outline',
+            label: t.about ?? 'About Us',
+            onPress: () => handleRedirect('https://jaishriramnaam.com/about'),
+        }
     ];
 
     const handleLogout = () => {
@@ -267,7 +302,7 @@ const ProfileScreen = ({ navigation }: profileProps) => {
                         <SkeletonBox style={{ height: 13, width: 100, borderRadius: 6 }} />
                     </View>
                 ) : (
-                    <> 
+                    <>
                         <TouchableOpacity
                             onPress={() => navigation.toggleDrawer()}
                             style={styles.iconBtn}
@@ -364,20 +399,18 @@ const ProfileScreen = ({ navigation }: profileProps) => {
                 {remaining > 0 ? (
                     <Text style={styles.progressHint}>
                         {isHindi
-                            ? `${remaining.toLocaleString()} राम नाम और → ${
-                                  level.next >= 10000
-                                      ? 'राम भक्त'
-                                      : level.next >= 5000
-                                      ? 'महाभक्त'
-                                      : 'साधु'
-                              } बनें`
-                            : `${remaining.toLocaleString()} more Ram Naam → Become ${
-                                  level.next >= 10000
-                                      ? 'Ram Bhakt'
-                                      : level.next >= 5000
-                                      ? 'MahaBhakt'
-                                      : 'Sadhu'
-                              }`}
+                            ? `${remaining.toLocaleString()} राम नाम और → ${level.next >= 10000
+                                ? 'राम भक्त'
+                                : level.next >= 5000
+                                    ? 'महाभक्त'
+                                    : 'साधु'
+                            } बनें`
+                            : `${remaining.toLocaleString()} more Ram Naam → Become ${level.next >= 10000
+                                ? 'Ram Bhakt'
+                                : level.next >= 5000
+                                    ? 'MahaBhakt'
+                                    : 'Sadhu'
+                            }`}
                     </Text>
                 ) : (
                     <Text style={[styles.progressHint, { color: Colors.success }]}>
@@ -454,6 +487,24 @@ const ProfileScreen = ({ navigation }: profileProps) => {
                 ))}
             </View>
 
+            {/* ── Site Menu Items ── */}
+            <View style={styles.menuCard}>
+                {redirectMenuItems.map((item, i) => (
+                    <TouchableOpacity
+                        key={i}
+                        style={[styles.menuItem, i < menuItems.length - 1 && styles.menuItemBorder]}
+                        onPress={item.onPress}
+                        activeOpacity={0.7}
+                    >
+                        <View style={styles.menuIconWrap}>
+                            <Ionicons name={item.icon as any} size={18} color={Colors.primary} />
+                        </View>
+                        <Text style={styles.menuLabel}>{item.label}</Text>
+                        <Ionicons name="chevron-forward" size={16} color={Colors.textMuted} />
+                    </TouchableOpacity>
+                ))}
+            </View>
+
             {/* ── Leaderboard ── */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>
@@ -489,10 +540,10 @@ const ProfileScreen = ({ navigation }: profileProps) => {
                                 {idx === 0
                                     ? '🥇'
                                     : idx === 1
-                                    ? '�'
-                                    : idx === 2
-                                    ? '🥉'
-                                    : `#${item.rank}`}
+                                        ? '�'
+                                        : idx === 2
+                                            ? '🥉'
+                                            : `#${item.rank}`}
                             </Text>
                             <Text style={styles.leaderName}>
                                 {isHindi ? item.nameHi : item.name}

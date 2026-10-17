@@ -1,0 +1,564 @@
+import React, { useEffect, useState } from 'react';
+import {
+      View,
+      Text,
+      StyleSheet,
+      ScrollView,
+      TouchableOpacity,
+      StatusBar,
+      FlatList
+} from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import {
+      Colors,
+      Fonts,
+      Spacing,
+      BorderRadius,
+      Shadow,
+} from '../theme/index';
+import { RootParamList } from '../navigation/AppNavigator';
+import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
+import { panditDashboardAPI } from '../service/apis/panditDashboardService';
+import { otherAPI } from '../service/apis/otherServices';
+import { IDevotee } from '../types/IUser';
+
+type Props = NativeBottomTabScreenProps<RootParamList, 'Devotees'>
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+type BookingStatus = 'confirmed' | 'pending' | 'completed';
+
+export interface IPanditBookingLocation {
+      address: string;
+      city: string;
+      state: string;
+      pincode: string;
+      landmark: string;
+}
+
+export interface IPanditBookingRequirements {
+      samagriNeeded: boolean;
+      numberOfPeople: number;
+      specialInstructions: string;
+      language: string;
+}
+
+export interface IPanditBookingPayment {
+      status: string;
+}
+
+export interface IPanditBookingUser {
+      _id: string;
+      name: string;
+      city: string;
+      contact: string;
+}
+
+export interface Booking {
+      _id: string;
+      user: IPanditBookingUser;
+      pandit: string;
+
+      poojaType: string;
+      poojaDate: string;
+      poojaTime: string;
+      duration: string;
+
+      location: IPanditBookingLocation;
+      requirements: IPanditBookingRequirements;
+      payment: IPanditBookingPayment;
+
+      price: number;
+      platformFee: number;
+      totalAmount: number;
+
+      status: string;
+      isReviewed: boolean;
+
+      createdAt: string;
+      updatedAt: string;
+      __v: number;
+}
+
+// ── Data ──────────────────────────────────────────────────────────────────────
+// const BOOKINGS: Booking[] = [
+//   {
+//     id: 1,
+//     puja: 'Satyanarayan Puja',
+//     person: 'Ramesh Sharma',
+//     address: 'Sector 12, Noida',
+//     date: 'Today, 9:00 AM',
+//     duration: '3 hrs',
+//     amount: '₹2,100',
+//     status: 'confirmed',
+//   },
+//   {
+//     id: 2,
+//     puja: 'Griha Pravesh',
+//     person: 'Sunita Verma',
+//     address: 'Raj Nagar, Ghaziabad',
+//     date: 'Today, 2:00 PM',
+//     duration: '5 hrs',
+//     amount: '₹4,500',
+//     status: 'confirmed',
+//   },
+//   {
+//     id: 3,
+//     puja: 'Mundan Sanskar',
+//     person: 'Anil Gupta',
+//     address: 'Vaishali, Ghaziabad',
+//     date: 'Tomorrow, 8:00 AM',
+//     duration: '2 hrs',
+//     amount: '₹1,800',
+//     status: 'pending',
+//   },
+//   {
+//     id: 4,
+//     puja: 'Kali Mata Puja',
+//     person: 'Deepa Singh',
+//     address: 'Indirapuram',
+//     date: 'Mar 21, 6:00 PM',
+//     duration: '4 hrs',
+//     amount: '₹3,200',
+//     status: 'pending',
+//   },
+//   {
+//     id: 5,
+//     puja: 'Vivah Panchami',
+//     person: 'Mohit & Priya',
+//     address: 'Greater Noida',
+//     date: 'Mar 18, 10:00 AM',
+//     duration: '6 hrs',
+//     amount: '₹7,500',
+//     status: 'completed',
+//   },
+//   {
+//     id: 6,
+//     puja: 'Navratri Havan',
+//     person: 'RWA Sector 11',
+//     address: 'Sector 11, Noida',
+//     date: 'Mar 15, 5:00 AM',
+//     duration: '8 hrs',
+//     amount: '₹9,000',
+//     status: 'completed',
+//   },
+// ];
+
+type Filter = 'all' | BookingStatus;
+const FILTERS: { key: Filter; label: string }[] = [
+      { key: 'all', label: 'All' },
+      { key: 'confirmed', label: 'Confirmed' },
+      { key: 'pending', label: 'Pending' },
+      { key: 'completed', label: 'Completed' },
+];
+
+const STATUS_CONFIG: Record<
+      BookingStatus,
+      { color: string; bg: string; label: string; accent: string }
+> = {
+      confirmed: {
+            color: '#2E7D32',
+            bg: '#E8F5E9',
+            label: 'CONFIRMED',
+            accent: '#4CAF50',
+      },
+      pending: {
+            color: '#F57F17',
+            bg: '#FFF8E1',
+            label: 'PENDING',
+            accent: Colors.warning,
+      },
+      completed: {
+            color: '#1565C0',
+            bg: '#E3F2FD',
+            label: 'COMPLETED',
+            accent: Colors.info,
+      },
+};
+
+// ── Component ─────────────────────────────────────────────────────────────────
+export default function AllDevoteeScreen({ navigation }: Props) {
+      const [devotees, setBookings] = useState<IDevotee[]>([]);
+      const [filter, setFilter] = useState<Filter>('all');
+
+      useEffect(() => {
+            fetchDevotees();
+      }, []);
+
+      const fetchDevotees = async () => {
+            try {
+                  const response = await otherAPI.alldevotees();
+                  setBookings(response.data?.users);
+            } catch (error) {
+                  console.error('Error fetching bookings:', error);
+            }
+      }
+
+      // const filtered =
+      //       filter === 'all' ? devotees : devotees.filter(b => b.status === filter);
+
+      //   const counts = {
+      //     all: devotees.length,
+      //     confirmed: devotees.filter(b => b.status === 'confirmed').length,
+      //     pending: devotees.filter(b => b.status === 'pending').length,
+      //     completed: devotees.filter(b => b.status === 'completed').length,
+      //   };
+
+      return (
+            <View style={styles.root}>
+                  <StatusBar barStyle="light-content" backgroundColor={Colors.secondary} />
+
+                  {/* Top band */}
+                  <LinearGradient
+                        colors={Colors.gradientRam as string[]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.topBand}
+                  />
+
+                  {/* Header */}
+                  <LinearGradient
+                        colors={[Colors.secondary, Colors.primary, Colors.gold] as string[]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.header}
+                  >
+                        <View style={styles.headerRow}>
+                              <View>
+                                    <Text style={styles.headerLabel}>All</Text>
+                                    <Text style={styles.headerTitle}>Devotees</Text>
+                              </View>
+                              <TouchableOpacity style={styles.addBtn}>
+                                    <Ionicons name="add" size={22} color={Colors.textLight} />
+                              </TouchableOpacity>
+                        </View>
+                        {/* <Text style={styles.headerSub}>
+          {counts.confirmed} upcoming · {counts.completed} completed this week
+        </Text> */}
+                  </LinearGradient>
+
+                  {/* Filter chips */}
+                  {/* <View style={styles.filterWrap}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.filterScroll}
+        >
+          {FILTERS.map(f => (
+            <TouchableOpacity
+              key={f.key}
+              onPress={() => setFilter(f.key)}
+              activeOpacity={0.75}
+              style={styles.filterChipWrap}
+            >
+              {filter === f.key ? (
+                <LinearGradient
+                  colors={Colors.gradientRam as string[]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.filterChipActive}
+                >
+                  <Text style={styles.filterChipTextActive}>
+                    {f.label} {counts[f.key]}
+                  </Text>
+                </LinearGradient>
+              ) : (
+                <View style={styles.filterChip}>
+                  <Text style={styles.filterChipText}>
+                    {f.label} {counts[f.key]}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View> */}
+
+                  <FlatList
+                        data={devotees}
+                        keyExtractor={(item) => item._id}
+                        contentContainerStyle={styles.scroll}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={({ item: b }) => {
+
+
+                              return (
+                                    <View
+                                          style={[
+                                                styles.bookingCard,
+                                                { borderLeftColor: '#4CAF50' },
+                                          ]}
+                                    >
+                                          {/* Top row */}
+                                          <View style={styles.cardTopRow}>
+                                                <Text style={styles.pujaName}>{b.name}</Text>
+
+                                                <View
+                                                      style={[
+                                                            styles.statusBadge,
+                                                            { backgroundColor: '#E8F5E9' },
+                                                      ]}
+                                                >
+                                                      <Text
+                                                            style={[styles.statusText, { color: '#2E7D32' }]}
+                                                      >
+                                                            {b.rank}
+                                                      </Text>
+                                                </View>
+                                          </View>
+
+                                          {/* Person */}
+                                          <View style={styles.personRow}>
+                                                <Ionicons
+                                                      name="person-outline"
+                                                      size={13}
+                                                      color={Colors.textSecondary}
+                                                />
+                                                <Text style={styles.personName}>{b.name}</Text>
+                                          </View>
+
+                                          {/* Details */}
+                                          <View style={styles.detailsRow}>
+                                                <View style={styles.detailItem}>
+                                                      <Ionicons
+                                                            name="location-outline"
+                                                            size={12}
+                                                            color={Colors.textMuted}
+                                                      />
+                                                      <Text style={styles.detailText}>{b.rank}</Text>
+                                                </View>
+
+                                                <View style={styles.detailItem}>
+                                                      <Ionicons
+                                                            name="time-outline"
+                                                            size={12}
+                                                            color={Colors.textMuted}
+                                                      />
+                                                      <Text style={styles.detailText}>{b.totalCount}</Text>
+                                                </View>
+                                          </View>
+                                    </View>
+                              );
+                        }}
+                        ListEmptyComponent={
+                              <View style={styles.emptyContainer}>
+                                    <Text style={styles.emptyTitle}>No devotees found</Text>
+                                    <Text style={styles.emptySubtitle}>
+                                          Devotees will appear here when data is available.
+                                    </Text>
+                              </View>
+                        }
+                  />
+
+                  {/* Bottom band */}
+                  <LinearGradient
+                        colors={
+                              [
+                                    Colors.secondary,
+                                    Colors.primary,
+                                    Colors.gold,
+                                    Colors.primary,
+                                    Colors.secondary,
+                              ] as string[]
+                        }
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.bottomBand}
+                  />
+            </View>
+      );
+}
+
+// ── Styles ────────────────────────────────────────────────────────────────────
+const styles = StyleSheet.create({
+      root: { flex: 1, backgroundColor: Colors.background },
+      topBand: { height: 3, width: '100%' },
+      bottomBand: { height: 3, width: '100%' },
+
+      header: {
+            paddingHorizontal: Spacing.xl,
+            paddingTop: Spacing.lg,
+            paddingBottom: Spacing.md,
+      },
+      headerRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+      },
+      headerLabel: {
+            fontSize: Fonts.sizes.xs,
+            color: 'rgba(255,255,255,0.75)',
+            letterSpacing: 1,
+      },
+      headerTitle: {
+            fontSize: Fonts.sizes.xxl,
+            fontWeight: '700',
+            color: Colors.textLight,
+            letterSpacing: 0.5,
+      },
+      headerSub: {
+            fontSize: Fonts.sizes.xs,
+            color: 'rgba(255,255,255,0.7)',
+            marginTop: Spacing.xs,
+            letterSpacing: 0.3,
+      },
+      addBtn: {
+            width: 38,
+            height: 38,
+            borderRadius: 19,
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.35)',
+            alignItems: 'center',
+            justifyContent: 'center',
+      },
+
+      filterWrap: {
+            backgroundColor: Colors.cardBg,
+            borderBottomWidth: 1,
+            borderBottomColor: Colors.border,
+      },
+      filterScroll: {
+            paddingHorizontal: Spacing.xl,
+            paddingVertical: Spacing.sm,
+            gap: Spacing.sm,
+      },
+      filterChipWrap: {},
+      filterChipActive: {
+            borderRadius: 20,
+            paddingHorizontal: Spacing.lg,
+            paddingVertical: 6,
+      },
+      filterChip: {
+            borderRadius: 20,
+            paddingHorizontal: Spacing.lg,
+            paddingVertical: 6,
+            borderWidth: 1.5,
+            borderColor: Colors.border,
+            backgroundColor: Colors.cardBg,
+      },
+      filterChipText: {
+            fontSize: Fonts.sizes.xs,
+            color: Colors.textMuted,
+            fontWeight: '600',
+            letterSpacing: 0.3,
+      },
+      filterChipTextActive: {
+            fontSize: Fonts.sizes.xs,
+            color: Colors.textLight,
+            fontWeight: '600',
+            letterSpacing: 0.3,
+      },
+
+      scroll: {
+            paddingHorizontal: Spacing.xl,
+            paddingTop: Spacing.lg,
+            paddingBottom: Spacing.xxxl,
+      },
+
+      bookingCard: {
+            backgroundColor: Colors.cardBg,
+            borderRadius: BorderRadius.md,
+            borderWidth: 1,
+            borderColor: Colors.border,
+            borderLeftWidth: 4,
+            padding: Spacing.lg,
+            marginBottom: Spacing.md,
+            ...Shadow.sm,
+      },
+      cardTopRow: {
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+            justifyContent: 'space-between',
+            marginBottom: Spacing.sm,
+      },
+      pujaName: {
+            fontSize: Fonts.sizes.md,
+            fontWeight: '700',
+            color: Colors.textPrimary,
+            flex: 1,
+            marginRight: Spacing.sm,
+      },
+      statusBadge: {
+            borderRadius: 10,
+            paddingHorizontal: Spacing.sm,
+            paddingVertical: 3,
+      },
+      statusText: { fontSize: 9, fontWeight: '700', letterSpacing: 1 },
+
+      personRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 4,
+            marginBottom: Spacing.sm,
+      },
+      personName: {
+            fontSize: Fonts.sizes.sm,
+            fontWeight: '600',
+            color: Colors.textSecondary,
+      },
+
+      detailsRow: { gap: 4, marginBottom: Spacing.sm },
+      detailItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+      detailText: { fontSize: 11, color: Colors.textMuted },
+
+      cardFooter: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: Spacing.sm,
+            borderTopWidth: 1,
+            borderTopColor: Colors.saffronBg,
+      },
+      amount: {
+            fontSize: Fonts.sizes.lg,
+            fontWeight: '700',
+            color: Colors.primary,
+      },
+      actionsRow: { flexDirection: 'row', gap: Spacing.sm },
+      btnOutline: {
+            paddingHorizontal: Spacing.md,
+            paddingVertical: 6,
+            borderRadius: BorderRadius.sm,
+            borderWidth: 1.5,
+            borderColor: Colors.border,
+      },
+      btnOutlineText: {
+            fontSize: Fonts.sizes.xs,
+            fontWeight: '600',
+            color: Colors.textSecondary,
+            letterSpacing: 0.3,
+      },
+      btnFill: {
+            paddingHorizontal: Spacing.md,
+            paddingVertical: 6,
+            borderRadius: BorderRadius.sm,
+      },
+      btnFillText: {
+            fontSize: Fonts.sizes.xs,
+            fontWeight: '700',
+            color: Colors.textLight,
+            letterSpacing: 0.3,
+      },
+      emptyContainer: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 40,
+            paddingHorizontal: 20,
+      },
+      emptyTitle: {
+            fontSize: 18,
+            fontWeight: '600',
+            color: '#3F3F46',
+            textAlign: 'center',
+            marginBottom: 8,
+      },
+      emptySubtitle: {
+            fontSize: 14,
+            color: '#71717A',
+            textAlign: 'center',
+            lineHeight: 20,
+      },
+});

@@ -21,6 +21,7 @@ import AstrologerRegisterScreen from '../screens/auth/AstrologerRegisterScreen';
 import AstrologerHomeScreen from '../screens/astrologer/AstrologerHome';
 import AstrologerDetailScreen from '../screens/astrologer/AstroDetail';
 import { IAstrologer } from '../types/IAstrologer';
+import AllDevoteeScreen from '../screens/AllDevotee';
 
 export type RootParamList = {
   splash: undefined;
@@ -45,6 +46,7 @@ export type RootParamList = {
   AstroDetail: {
     astrologer: IAstrologer
   };
+  Devotees: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootParamList>();
@@ -73,6 +75,7 @@ const AppNavigator = () => {
         <Stack.Screen name="AstrologerRegister" component={AstrologerRegisterScreen} />
         <Stack.Screen name='AstroHome' component={AstrologerHomeScreen} />
         <Stack.Screen name="AstroDetail" component={AstrologerDetailScreen} />
+        <Stack.Screen name="Devotees" component={AllDevoteeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
