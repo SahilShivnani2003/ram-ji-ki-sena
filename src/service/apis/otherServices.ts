@@ -14,7 +14,7 @@ export const otherAPI = {
     deleteName: (id: string) => privateClient.delete(`custom-jaap-names/${id}`),
 
     //community
-    community: () => publicClient.get('/community/posts?page=1&limit=10&filter=all'),
+    community: () => privateClient.get('/community/posts?page=1&limit=10&filter=all'),
     communityPost: (data: ICommunityPost) => privateClient.post('/community/posts', data),
     communityPostLike: (id: string) => privateClient.post(`/community/posts/${id}/like`),
     communityPostComment: (id: string, text: string) =>
