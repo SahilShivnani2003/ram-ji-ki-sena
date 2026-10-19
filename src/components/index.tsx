@@ -4,13 +4,14 @@ import { Colors, Fonts, Spacing, BorderRadius, Shadow } from '../theme';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { DrawerParamList } from '../navigation/DrawerNavigator';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { RootParamList } from '../navigation/AppNavigator';
 
 // ─── GradientHeader ──────────────────────────────────────────────────────────
 interface GradientHeaderProps {
     title: string;
     subtitle?: string;
     rightComponent?: React.ReactNode;
-    navigation: DrawerNavigationProp<DrawerParamList>;
+    navigation: DrawerNavigationProp<DrawerParamList | RootParamList>;
 }
 export const GradientHeader: React.FC<GradientHeaderProps> = ({
     title,

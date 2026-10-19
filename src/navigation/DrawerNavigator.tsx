@@ -76,6 +76,12 @@ const drawerItems: IDrawerItem[] = [
         iconActive: 'cart-outline',
         label: 'Bookings',
     },
+    {
+        key: 'Astrologer',
+        icon: 'sparkles-outline',
+        iconActive: 'cart-outline',
+        label: 'Astrologers',
+    },
 ];
 const Drawer = createDrawerNavigator<DrawerParamList>();
 

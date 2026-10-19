@@ -632,6 +632,7 @@
 //     letterSpacing: 0.5,
 //   },
 // });
+
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   View,
@@ -644,6 +645,7 @@ import {
   Image,
   RefreshControl,
   ActivityIndicator,
+  Linking,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -661,10 +663,12 @@ import {
 import { RootParamList } from '../../navigation/AppNavigator';
 import { NativeBottomTabScreenProps } from '@react-navigation/bottom-tabs/unstable';
 import { PanditTabParamList } from '../../navigation/PanditTabNavigation';
+import { useAuthStore } from '../../store/useAuthore';
 
-// TODO: adjust these two imports to your project
 import { IPandit, IPanditResponse, IPanditReview } from '../../types/IPandit';
 import { panditDashboardAPI } from '../../service/apis/panditDashboardService';
+import { useI18n } from '../../i18n';
+import { DrawerParamList } from '../../navigation/DrawerNavigator';
 
 type Props = NativeBottomTabScreenProps<PanditTabParamList, 'Profile'>;
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
@@ -690,6 +694,7 @@ interface MenuItem {
   sub: string;
   badge?: string;
   destructive?: boolean;
+  onPress: () => void;
 }
 
 const pricingSub = (p: IPandit): string => {
@@ -698,56 +703,67 @@ const pricingSub = (p: IPandit): string => {
   return `${p.services.length} services · from ${formatINR(min)}`;
 };
 
+const handleRedirect = (uri: string) => {
+  if (uri === '') {
+    Alert.alert('Site page not exist');
+    return;
+  }
+  Linking.openURL(uri);
+}
+
 const buildMenuSections = (
   pandit: IPandit,
+  navigation: Props,
 ): { title: string; items: MenuItem[] }[] => [
-    {
-      title: 'Account',
-      items: [
-        {
-          icon: 'person-outline',
-          label: 'Edit Profile',
-          sub: `${pandit.username ? '@' + pandit.username + ' · ' : ''}Name, photo, expertise`,
-        },
-        {
-          icon: 'location-outline',
-          label: 'Service Areas',
-          sub: [pandit.location.city, pandit.location.state]
-            .filter(Boolean)
-            .join(', '),
-        },
-        {
-          icon: 'pricetag-outline',
-          label: 'Puja Pricing',
-          sub: pricingSub(pandit),
-        },
-        {
-          icon: 'card-outline',
-          label: 'Bank Account',
-          sub: 'HDFC ···4521 · Linked',
-        },
-      ],
-    },
+    // {
+    //   title: 'Account',
+    //   items: [
+    //     {
+    //       icon: 'person-outline',
+    //       label: 'Edit Profile',
+    //       sub: `${pandit.username ? '@' + pandit.username + ' · ' : ''}Name, photo, expertise`,
+    //     },
+    //     {
+    //       icon: 'location-outline',
+    //       label: 'Service Areas',
+    //       sub: [pandit.location.city, pandit.location.state]
+    //         .filter(Boolean)
+    //         .join(', '),
+    //     },
+    //     {
+    //       icon: 'pricetag-outline',
+    //       label: 'Puja Pricing',
+    //       sub: pricingSub(pandit),
+    //     },
+    //     {
+    //       icon: 'card-outline',
+    //       label: 'Bank Account',
+    //       sub: 'HDFC ···4521 · Linked',
+    //     },
+    //   ],
+    // },
     {
       title: 'Preferences',
       items: [
         {
           icon: 'shield-checkmark-outline',
-          label: 'Privacy & Security',
-          sub: 'Password, 2FA, login sessions',
+          label: 'Blog',
+          sub: 'Read blogs',
+          onPress: () => handleRedirect('https://jaishriramnaam.com/blogs'),
         },
         {
           icon: 'language-outline',
-          label: 'Language',
-          sub: pandit.languages.length ? pandit.languages.join(' · ') : 'Not set',
+          label: 'Community',
+          sub: 'See community, follow peoples',
+          onPress: () => navigation.getParent<NativeStackNavigationProp<DrawerParamList>>().navigate('Community'),
         },
         {
           icon: 'notifications-outline',
           label: 'Notifications',
           sub: 'Bookings, payments, updates',
           badge: '3',
+          onPress: () => console.log(''),
         },
-        { icon: 'moon-outline', label: 'Appearance', sub: 'Light mode' },
       ],
     },
     {
@@ -758,13 +774,27 @@ const buildMenuSections = (
           label: 'Help & Support',
           sub: 'Chat, call, raise a ticket',
           badge: '2',
+          onPress: () => handleRedirect(''),
         },
         {
           icon: 'document-text-outline',
-          label: 'Terms & Privacy',
+          label: 'Terms & Conditions',
           sub: 'Legal documents',
+          onPress: () => handleRedirect(''),
         },
-        { icon: 'star-outline', label: 'Rate the App', sub: 'Help us improve' },
+        {
+          icon: 'shield-checkmark-outline',
+          label: 'Privacy & Security',
+          sub: 'Password, 2FA, login sessions',
+          onPress: () => handleRedirect(''),
+        },
+
+        {
+          icon: 'person-outline',
+          label: 'About Us',
+          sub: 'Know more about us',
+          onPress: () => handleRedirect('https://jaishriramnaam.com/about'),
+        }
       ],
     },
   ];
@@ -776,6 +806,8 @@ export default function ProfileScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { t, isHindi, language, setLanguage } = useI18n();
+  const { logOut } = useAuthStore();
 
   const loadProfile = useCallback(async (isRefresh = false) => {
     if (isRefresh) setRefreshing(true);
@@ -825,7 +857,7 @@ export default function ProfileScreen({ navigation }: Props) {
   );
 
   const menuSections = useMemo(
-    () => (pandit ? buildMenuSections(pandit) : []),
+    () => (pandit ? buildMenuSections(pandit, navigation) : []),
     [pandit],
   );
 
@@ -835,10 +867,12 @@ export default function ProfileScreen({ navigation }: Props) {
       {
         text: 'Sign Out',
         style: 'destructive',
-        onPress: () =>
+        onPress: () => {
+          logOut();
           navigation
             .getParent<NativeStackNavigationProp<RootParamList>>()
-            .replace('login'),
+            .replace('login');
+        },
       },
     ]);
   };
@@ -1014,6 +1048,36 @@ export default function ProfileScreen({ navigation }: Props) {
           ))}
         </View>
 
+        {/* ── Language Toggle ── */}
+        <View style={styles.section}>
+          <Text style={styles.langsectionTitle}>{t.language ?? 'Language'}</Text>
+          <View style={styles.langToggle}>
+            {[
+              { key: 'hi', label: 'हिन्दी' },
+              { key: 'en', label: 'English' },
+            ].map(l => (
+              <TouchableOpacity
+                key={l.key}
+                style={[styles.langBtn, language === l.key && styles.langBtnActive]}
+                onPress={() => setLanguage(l.key as 'hi' | 'en')}
+              >
+                {language === l.key ? (
+                  <LinearGradient
+                    colors={Colors.gradientRam as string[]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={styles.langBtnGradient}
+                  >
+                    <Text style={styles.langBtnTextActive}>{l.label}</Text>
+                  </LinearGradient>
+                ) : (
+                  <Text style={styles.langBtnText}>{l.label}</Text>
+                )}
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
         {/* ── Menu Sections ── */}
         {menuSections.map(section => (
           <View key={section.title}>
@@ -1027,6 +1091,7 @@ export default function ProfileScreen({ navigation }: Props) {
                     i === section.items.length - 1 && styles.menuItemLast,
                   ]}
                   activeOpacity={0.7}
+                  onPress={item.onPress}
                 >
                   <View style={styles.menuLeft}>
                     <View style={styles.menuIconWrap}>
@@ -1381,4 +1446,33 @@ const styles = StyleSheet.create({
     color: Colors.textMuted,
     letterSpacing: 0.5,
   },
+
+  section: { marginTop: Spacing.md },
+  langsectionTitle: {
+    fontSize: Fonts.sizes.lg,
+    fontWeight: '700',
+    color: Colors.primary,
+    marginBottom: Spacing.md,
+  },
+
+  // Language toggle
+  langToggle: {
+    flexDirection: 'row',
+    backgroundColor: Colors.saffronBg,
+    borderRadius: BorderRadius.md,
+    padding: 4,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  langBtn: { flex: 1, borderRadius: BorderRadius.sm, overflow: 'hidden' },
+  langBtnActive: {},
+  langBtnGradient: { paddingVertical: Spacing.sm, alignItems: 'center' },
+  langBtnText: {
+    fontSize: Fonts.sizes.md,
+    fontWeight: '700',
+    color: Colors.textMuted,
+    textAlign: 'center',
+    paddingVertical: Spacing.sm,
+  },
+  langBtnTextActive: { fontSize: Fonts.sizes.md, fontWeight: '700', color: Colors.textLight },
 });

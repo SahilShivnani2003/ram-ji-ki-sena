@@ -154,4 +154,7 @@ export const en = {
   // Greetings
   jay: 'Jai',
   shriRam: 'Shri Ram',
+
+  //Astrologer
+  astrologer: 'Astrologers',
 };

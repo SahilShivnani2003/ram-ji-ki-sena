@@ -17,8 +17,9 @@ import { GradientHeader, Badge, SectionHeader } from '../../components';
 import { DrawerScreenProps } from '@react-navigation/drawer';
 import { DrawerParamList } from '../../navigation/DrawerNavigator';
 import { otherAPI, ICommunityPost } from '../../service/apis/otherServices';
+import { RootParamList } from '../../navigation/AppNavigator';
 
-type communityProps = DrawerScreenProps<DrawerParamList, 'Community'>;
+type communityProps = DrawerScreenProps<DrawerParamList | RootParamList, 'Community'>;
 
 interface CommunityComment {
     _id: string;

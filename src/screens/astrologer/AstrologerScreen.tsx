@@ -26,6 +26,8 @@ import { DrawerScreenProps } from '@react-navigation/drawer';
 import { DrawerParamList } from '../../navigation/DrawerNavigator';
 import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootParamList } from '../../navigation/AppNavigator';
+import { useI18n } from '../../i18n';
+import { GradientHeader } from '../../components';
 
 type AstrologersProps = DrawerScreenProps<DrawerParamList, 'Astrologer'>;
 
@@ -451,10 +453,6 @@ const ListHeader = ({
                         <Text style={styles.heroTitle}>
                               Clear guidance, <Text style={styles.heroTitleAccent}>bright future</Text>
                         </Text>
-                        <Text style={styles.heroSub}>
-                              Get personalized consultation from experienced astrologers and certified tarot card readers
-                              on horoscope, career, marriage, Vastu and every important question of life.
-                        </Text>
                   </LinearGradient>
 
                   {/* ----------------------------- Search card ---------------------------- */}
@@ -592,6 +590,7 @@ export default function AstrologersScreen({ navigation }: AstrologersProps) {
       const [specialty, setSpecialty] = useState<string | null>(null);
       const [sort, setSort] = useState<SortKey>('rating');
       const [sortOpen, setSortOpen] = useState(false);
+      const { t, isHindi } = useI18n();
 
       const active = useMemo(() => astrologers.filter(a => a.isActive), [astrologers]);
       const rootNav = navigation.getParent<NativeStackNavigationProp<RootParamList>>();
