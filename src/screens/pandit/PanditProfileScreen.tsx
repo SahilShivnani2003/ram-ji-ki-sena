@@ -713,7 +713,6 @@ const handleRedirect = (uri: string) => {
 
 const buildMenuSections = (
   pandit: IPandit,
-  navigation: Props,
 ): { title: string; items: MenuItem[] }[] => [
     // {
     //   title: 'Account',
@@ -750,12 +749,6 @@ const buildMenuSections = (
           label: 'Blog',
           sub: 'Read blogs',
           onPress: () => handleRedirect('https://jaishriramnaam.com/blogs'),
-        },
-        {
-          icon: 'language-outline',
-          label: 'Community',
-          sub: 'See community, follow peoples',
-          onPress: () => navigation.getParent<NativeStackNavigationProp<DrawerParamList>>().navigate('Community'),
         },
         {
           icon: 'notifications-outline',
@@ -857,7 +850,7 @@ export default function ProfileScreen({ navigation }: Props) {
   );
 
   const menuSections = useMemo(
-    () => (pandit ? buildMenuSections(pandit, navigation) : []),
+    () => (pandit ? buildMenuSections(pandit) : []),
     [pandit],
   );
 
@@ -942,7 +935,7 @@ export default function ProfileScreen({ navigation }: Props) {
           style={styles.heroCard}
         >
           {/* Edit button */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.editBtn}
             onPress={() => setEditMode(p => !p)}
           >
@@ -951,7 +944,7 @@ export default function ProfileScreen({ navigation }: Props) {
               size={16}
               color={Colors.textLight}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* Avatar */}
           <View style={styles.avatarWrap}>

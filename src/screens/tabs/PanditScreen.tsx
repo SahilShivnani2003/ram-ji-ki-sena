@@ -22,6 +22,7 @@ import { DrawerParamList } from '../../navigation/DrawerNavigator';
 import { bookingAPI } from '../../service/apis/bookingServices';
 import { ICreateBooking } from '../../types/IBooking';
 import CreateBookingModal from '../CreateBookingModal';
+import { useAuthStore } from '../../store/useAuthore';
 
 type panditProps = DrawerScreenProps<DrawerParamList, 'Pandit'>;
 // ── API Types ─────────────────────────────────────────────────────────────────
@@ -127,6 +128,7 @@ const PanditCard = ({
     const [expanded, setExpanded] = useState(false);
     const available = isAvailableToday(pandit.availability?.workingDays ?? []);
     const [modalShow, setModalShow] = useState(false);
+    const { isAuthenticated } = useAuthStore();
 
     const handleCall = () =>
         pandit.contact?.phone && Linking.openURL(`tel:${pandit.contact.phone}`).catch(() => { });
@@ -137,6 +139,16 @@ const PanditCard = ({
     };
 
     const handleBook = () => {
+        if (isAuthenticated === false) {
+            {
+                isHindi === true ? (
+                    Alert.alert('लॉगिन करें', 'पंडित जी को बुक करने के लिए कृपया लॉगिन करें।')
+                ) : (
+                Alert.alert('Login', 'Please login to book pandit')
+            )
+            }
+            return;
+        }
         setModalShow(true);
     }
 

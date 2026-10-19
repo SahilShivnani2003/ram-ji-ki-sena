@@ -225,55 +225,15 @@ export default function AllDevoteeScreen({ navigation }: Props) {
                         style={styles.header}
                   >
                         <View style={styles.headerRow}>
+                              <TouchableOpacity style={styles.addBtn} onPress={() => navigation.goBack()}>
+                                    <Ionicons name="arrow-back" size={22} color={Colors.textLight} />
+                              </TouchableOpacity>
                               <View>
                                     <Text style={styles.headerLabel}>All</Text>
                                     <Text style={styles.headerTitle}>Devotees</Text>
                               </View>
-                              <TouchableOpacity style={styles.addBtn}>
-                                    <Ionicons name="add" size={22} color={Colors.textLight} />
-                              </TouchableOpacity>
                         </View>
-                        {/* <Text style={styles.headerSub}>
-          {counts.confirmed} upcoming · {counts.completed} completed this week
-        </Text> */}
                   </LinearGradient>
-
-                  {/* Filter chips */}
-                  {/* <View style={styles.filterWrap}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filterScroll}
-        >
-          {FILTERS.map(f => (
-            <TouchableOpacity
-              key={f.key}
-              onPress={() => setFilter(f.key)}
-              activeOpacity={0.75}
-              style={styles.filterChipWrap}
-            >
-              {filter === f.key ? (
-                <LinearGradient
-                  colors={Colors.gradientRam as string[]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.filterChipActive}
-                >
-                  <Text style={styles.filterChipTextActive}>
-                    {f.label} {counts[f.key]}
-                  </Text>
-                </LinearGradient>
-              ) : (
-                <View style={styles.filterChip}>
-                  <Text style={styles.filterChipText}>
-                    {f.label} {counts[f.key]}
-                  </Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View> */}
 
                   <FlatList
                         data={devotees}
@@ -322,7 +282,7 @@ export default function AllDevoteeScreen({ navigation }: Props) {
                                           <View style={styles.detailsRow}>
                                                 <View style={styles.detailItem}>
                                                       <Ionicons
-                                                            name="location-outline"
+                                                            name="stats-chart-outline"
                                                             size={12}
                                                             color={Colors.textMuted}
                                                       />

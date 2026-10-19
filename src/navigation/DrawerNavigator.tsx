@@ -72,14 +72,14 @@ const drawerItems: IDrawerItem[] = [
     },
     {
         key: 'Bookings',
-        icon: 'cart',
-        iconActive: 'cart-outline',
+        icon: 'cart-outline',
+        iconActive: 'cart',
         label: 'Bookings',
     },
     {
         key: 'Astrologer',
         icon: 'sparkles-outline',
-        iconActive: 'cart-outline',
+        iconActive: 'sparkels',
         label: 'Astrologers',
     },
 ];

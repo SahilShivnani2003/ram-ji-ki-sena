@@ -11,6 +11,8 @@ export const en = {
   pandits: 'Pandits',
   community: 'Community',
   profile: 'Profile',
+  astro: 'Astrologer',
+  naamlekhan: 'Namlekhan',
 
   // Home
   greeting: 'Jai Shri Ram!',

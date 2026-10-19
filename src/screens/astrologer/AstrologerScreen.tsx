@@ -14,6 +14,7 @@ import {
       StyleSheet,
       Text,
       TextInput,
+      TouchableOpacity,
       useWindowDimensions,
       View,
 } from 'react-native';
@@ -28,6 +29,7 @@ import { NativeStackNavigationProp, NativeStackScreenProps } from '@react-naviga
 import { RootParamList } from '../../navigation/AppNavigator';
 import { useI18n } from '../../i18n';
 import { GradientHeader } from '../../components';
+import { useAuthStore } from '../../store/useAuthore';
 
 type AstrologersProps = DrawerScreenProps<DrawerParamList, 'Astrologer'>;
 
@@ -417,6 +419,7 @@ interface ListHeaderProps {
       onSpecialty: (s: string | null) => void;
       onOpenSort: () => void;
       onPressJoin?: () => void;
+      nav: AstrologersProps['navigation'];
 }
 
 const ListHeader = ({
@@ -427,6 +430,7 @@ const ListHeader = ({
       specialty,
       specialtyOptions,
       resultCount,
+      nav,
       onQuery,
       onCity,
       onSpecialty,
@@ -435,26 +439,20 @@ const ListHeader = ({
 }: ListHeaderProps) => {
       const [dark0 = Colors.darkBg, dark1 = Colors.darkBg] = Colors.gradientDark;
       const sortLabel = SORT_OPTIONS.find(o => o.key === sort)?.label ?? 'Sort';
+      const { isAuthenticated, user } = useAuthStore();
 
       return (
             <View>
                   {/* -------------------------------- Hero -------------------------------- */}
-                  <LinearGradient
-                        colors={[dark0, dark1, Colors.background] as string[]}
-                        locations={[0, 0.55, 1]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={styles.hero}
-                  >
-                        <View style={styles.badge}>
-                              <Ionicons name="sparkles-outline" size={15} color={Colors.goldLight} />
-                              <Text style={styles.badgeText}>Vedic astrology and tarot card consultation</Text>
-                        </View>
+                  <View style={styles.hero}>
+                        {isAuthenticated && user.role === 'user' ? (
+                              <TouchableOpacity style={styles.iconBtn} onPress={() => nav.toggleDrawer()}>
+                                    <Ionicons name='menu' size={22} color={"rgba(255,255,255,0.9)"} />
+                              </TouchableOpacity>) : null}
                         <Text style={styles.heroTitle}>
                               Clear guidance, <Text style={styles.heroTitleAccent}>bright future</Text>
                         </Text>
-                  </LinearGradient>
-
+                  </View>
                   {/* ----------------------------- Search card ---------------------------- */}
                   <View style={styles.searchCard}>
                         <View style={wide ? styles.searchRowWide : undefined}>
@@ -556,7 +554,7 @@ const ListHeader = ({
                                     online or over the phone.
                               </Text>
                         </View>
-                        {onPressJoin ? (
+                        {/* {onPressJoin ? (
                               <Pressable
                                     onPress={onPressJoin}
                                     accessibilityRole="button"
@@ -566,7 +564,7 @@ const ListHeader = ({
                                     <Text style={styles.joinText}>Join as an Astrologer</Text>
                                     <Ionicons name="arrow-forward" size={16} color={Colors.primaryDark} />
                               </Pressable>
-                        ) : null}
+                        ) : null} */}
                   </View>
             </View>
       );
@@ -655,18 +653,13 @@ export default function AstrologersScreen({ navigation }: AstrologersProps) {
       const onPressGetAdvice = (data: any) => { }
       const onPressJoin = () => { }
 
-      const handleAdvice = useCallback(
-            (a: IAstrologer) => (onPressGetAdvice ?? onPressAstrologer)(a),
-            [onPressGetAdvice, onPressAstrologer],
-      );
-
       const renderItem: ListRenderItem<IAstrologer> = useCallback(
             ({ item }) => (
                   <View style={numColumns === 1 ? styles.itemSingle : { width: cardWidth, marginBottom: GAP }}>
-                        <AstrologerCard astrologer={item} onPress={() => onPressAstrologer(item)} onGetAdvice={() => handleAdvice(item)} />
+                        <AstrologerCard astrologer={item} onPress={() => onPressAstrologer(item)} onGetAdvice={() => onPressAstrologer(item)} />
                   </View>
             ),
-            [numColumns, cardWidth, onPressAstrologer, handleAdvice],
+            [numColumns, cardWidth, onPressAstrologer],
       );
 
       const showSkeleton = isLoading && active.length === 0;
@@ -687,6 +680,7 @@ export default function AstrologersScreen({ navigation }: AstrologersProps) {
                   onSpecialty={setSpecialty}
                   onOpenSort={() => setSortOpen(true)}
                   onPressJoin={onPressJoin}
+                  nav={navigation}
             />
       );
 
@@ -798,7 +792,7 @@ const styles = StyleSheet.create({
       /* hero */
       hero: {
             alignItems: 'center',
-            paddingTop: (Platform.OS === 'android' ? StatusBar.currentHeight ?? 24 : 56) + Spacing.xl,
+            paddingTop: (Platform.OS === 'android' ? StatusBar.currentHeight ?? 24 : 30) + Spacing.sm,
             paddingHorizontal: Spacing.xxl,
             paddingBottom: Spacing.section + Spacing.section,
       },
@@ -828,7 +822,7 @@ const styles = StyleSheet.create({
             fontSize: 36,
             lineHeight: 42,
             fontWeight: '800',
-            color: Colors.textLight,
+            color: Colors.primary,
             textAlign: 'center',
       },
       heroTitleAccent: { color: Colors.goldLight },
@@ -1095,4 +1089,13 @@ const styles = StyleSheet.create({
       sheetRowActive: { backgroundColor: Colors.saffronBg },
       sheetRowText: { fontSize: Fonts.sizes.lg, fontWeight: '600', color: Colors.textSecondary },
       sheetRowTextActive: { fontWeight: '800', color: Colors.textPrimary },
+      iconBtn: {
+            width: 42,
+            height: 42,
+            borderRadius: 21,
+            backgroundColor: 'rgba(0,0,0,0.25)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0, // ← prevents icon from being squeezed by long mantra text
+      },
 });

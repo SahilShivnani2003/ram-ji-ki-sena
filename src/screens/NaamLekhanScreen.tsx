@@ -1402,11 +1402,11 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
         () =>
             activeCustom
                 ? {
-                      keys: activeCustom.chars.map((_, i) => String(i + 1)),
-                      syllables: activeCustom.chars,
-                      mantra: activeCustom.label,
-                      color: Colors.primary,
-                  }
+                    keys: activeCustom.chars.map((_, i) => String(i + 1)),
+                    syllables: activeCustom.chars,
+                    mantra: activeCustom.label,
+                    color: Colors.primary,
+                }
                 : DEITY_KEY_MAP[deity.id] ?? DEITY_KEY_MAP['ram'],
         [activeCustom, deity.id],
     );
@@ -1858,21 +1858,22 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
             >
                 {/* ── Header ── */}
                 <View style={styles.header}>
-                    {user?.role !== 'pandit' || user?.role === '' ? (
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (isAuthenticated && user?.role === 'user') {
-                                    navigation.toggleDrawer();
-                                } else if (isAuthenticated && user?.role === 'astrologer') {
-                                    navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('AstroHome', { id: user._id });
-                                } else {
-                                    navigation.getParent<NativeStackNavigationProp<RootParamList>>().replace('login');
-                                }
-                            }}
-                            style={styles.iconBtn}
-                        >
-                            <Ionicons name={isAuthenticated && user.role === 'user' ? "menu" : "person-outline"} size={32} color="rgba(255,255,255,0.9)" />
-                        </TouchableOpacity>) : null}
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (isAuthenticated && user?.role === 'user') {
+                                navigation.toggleDrawer();
+                            } else if (isAuthenticated && user?.role === 'astrologer') {
+                                navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('AstroHome', { id: user._id });
+                            } else if (isAuthenticated && user?.role === 'pandit') {
+                                navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('pandit', { screen: 'Home' });
+                            } else {
+                                navigation.getParent<NativeStackNavigationProp<RootParamList>>().replace('login');
+                            }
+                        }}
+                        style={styles.iconBtn}
+                    >
+                        <Ionicons name={isAuthenticated && user.role === 'user' ? "menu" : "person-outline"} size={32} color="rgba(255,255,255,0.9)" />
+                    </TouchableOpacity>
                     <View style={styles.headerCenter}>
                         <Text style={styles.headerTitle}>
                             {headerIcon} {headerName}
@@ -1992,28 +1993,28 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
 
                 {/* ── Shortcut Keys Row ── */}
                 {writeMode === 'button' ? (
-                <View style={styles.keysRow}>
-                    {deityKeys.syllables.map((syl, i) => (
-                        <TouchableOpacity
-                            key={i}
-                            style={styles.keyBtnWrap}
-                            onPress={() => handleShortcutKey(i)}
-                            activeOpacity={0.75}
-                        >
-                            <LinearGradient
-                                colors={keyColors[i % keyColors.length]}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 1 }}
-                                style={styles.keyBtn}
+                    <View style={styles.keysRow}>
+                        {deityKeys.syllables.map((syl, i) => (
+                            <TouchableOpacity
+                                key={i}
+                                style={styles.keyBtnWrap}
+                                onPress={() => handleShortcutKey(i)}
+                                activeOpacity={0.75}
                             >
-                                <Text style={styles.keyBtnSyl}>{syl}</Text>
-                                <Text style={styles.keyBtnTrigger}>
-                                    {deityKeys.keys[i].toUpperCase()}
-                                </Text>
-                            </LinearGradient>
-                        </TouchableOpacity>
-                    ))}
-                </View>
+                                <LinearGradient
+                                    colors={keyColors[i % keyColors.length]}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 1 }}
+                                    style={styles.keyBtn}
+                                >
+                                    <Text style={styles.keyBtnSyl}>{syl}</Text>
+                                    <Text style={styles.keyBtnTrigger}>
+                                        {deityKeys.keys[i].toUpperCase()}
+                                    </Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 ) : (
                     <View style={styles.kbWrap}>
                         <View style={styles.kbInputRow}>
@@ -2093,10 +2094,10 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
                             )}
                         </TouchableOpacity>
                     </Animated.View>
-                    <TouchableOpacity style={styles.historyBtn} activeOpacity={0.85} onPress={handleHistory}>
+                    {/* <TouchableOpacity style={styles.historyBtn} activeOpacity={0.85} onPress={handleHistory}>
                         <Ionicons name="bar-chart-outline" size={16} color="#fff" />
                         <Text style={styles.historyBtnText}>इतिहास</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
                 {/* ── Toolbar ── */}
@@ -2218,7 +2219,7 @@ export default function NamLekhanScreen({ navigation, route }: Props) {
                                     <Text style={styles.deityItemName}>{d.nameHi}</Text>
                                 </TouchableOpacity>
                             ))}
-                        {customNames.map(c => (
+                            {customNames.map(c => (
                                 <View key={c.id} style={styles.customItemWrap}>
                                     <TouchableOpacity
                                         style={[

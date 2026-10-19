@@ -11,6 +11,8 @@ export const hi = {
   pandits: 'पंडित',
   community: 'समुदाय',
   profile: 'प्रोफाइल',
+  astro: 'ज्योतिषी',
+  naamlekhan: 'नामांकन',
 
   // Home
   greeting: 'जय श्री राम!',

@@ -602,6 +602,8 @@ import type {
   IPanditDashboardStats,
   IUpcomingBooking,
 } from '../../types/panditDashboard';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootParamList } from '../../navigation/AppNavigator';
 
 type Props = NativeBottomTabScreenProps<PanditTabParamList, 'Home'>;
 
@@ -779,7 +781,7 @@ const buildSchedule = (bookings: IUpcomingBooking[]): ScheduleItem[] =>
     }));
 
 // ── Component ─────────────────────────────────────────────────────────────────
-export default function HomeScreen(_props: Props) {
+export default function HomeScreen(navigation: Props) {
   const [available, setAvailable] = useState(true);
   const [dashboard, setDashboard] = useState<IPanditDashboardResponse | null>(
     null,
@@ -885,7 +887,9 @@ export default function HomeScreen(_props: Props) {
         <View style={styles.headerRow}>
           <View style={styles.headerLeft}>
             <View style={styles.avatarWrap}>
-              <Text style={styles.avatarEmoji}>🧑‍🦳</Text>
+              <TouchableOpacity onPress={() => navigation.navigation.getParent<NativeStackNavigationProp<RootParamList>>().navigate('main', { screen: 'Namlekhan', params: { deity: undefined } })} >
+                <Ionicons name='home-outline' size={22} color={Colors.textLight} />
+              </TouchableOpacity>
             </View>
             <View>
               <Text style={styles.greeting}>Jai Shri Ram 🙏</Text>

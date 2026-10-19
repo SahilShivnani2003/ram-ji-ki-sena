@@ -186,6 +186,8 @@ export const CustomTabBar: React.FC<CustomTabBarProps> = ({
     Katha: t.katha,
     Pandits: t.pandits,
     Community: t.community,
+    Namlekhan: t.naamlekhan,
+    Astrologers: t.astro
   };
 
   return (

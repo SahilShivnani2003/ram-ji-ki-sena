@@ -5,6 +5,7 @@ import { DrawerNavigationProp } from '@react-navigation/drawer';
 import { DrawerParamList } from '../navigation/DrawerNavigator';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RootParamList } from '../navigation/AppNavigator';
+import { useAuthStore } from '../store/useAuthore';
 
 // ─── GradientHeader ──────────────────────────────────────────────────────────
 interface GradientHeaderProps {
@@ -18,20 +19,24 @@ export const GradientHeader: React.FC<GradientHeaderProps> = ({
     subtitle,
     rightComponent,
     navigation,
-}) => (
-    <View style={styles.gradientHeader}>
-        <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconBtn}>
-                <Ionicons name="menu" size={22} color="rgba(255,255,255,0.9)" />
-            </TouchableOpacity>
-            <View style={{ flexShrink: 1 }}>
-                <Text style={styles.headerTitle}>{title}</Text>
-                {subtitle && <Text style={styles.headerSubtitle}>{subtitle}</Text>}
+}) => {
+    const { isAuthenticated, user } = useAuthStore();
+    return (
+        <View style={styles.gradientHeader}>
+            <View style={styles.headerLeft}>
+                {isAuthenticated && user.role === 'user' ? (
+                    <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={styles.iconBtn}>
+                        <Ionicons name="menu" size={22} color="rgba(255,255,255,0.9)" />
+                    </TouchableOpacity>) : null}
+                <View style={{ flexShrink: 1 }}>
+                    <Text style={styles.headerTitle}>{title}</Text>
+                    {subtitle && <Text style={styles.headerSubtitle}>{subtitle}</Text>}
+                </View>
             </View>
+            {rightComponent && <View>{rightComponent}</View>}
         </View>
-        {rightComponent && <View>{rightComponent}</View>}
-    </View>
-);
+    );
+};
 
 // ─── SectionHeader ───────────────────────────────────────────────────────────
 interface SectionHeaderProps {
@@ -195,12 +200,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'flex-end',
     },
-    headerLeft: { 
-      flex: 1 ,
-      display: 'flex',
-      flexDirection: 'row',
-      alignItems: 'center',
-      gap: Spacing.md,
+    headerLeft: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: Spacing.md,
     },
     headerTitle: {
         color: Colors.textLight,

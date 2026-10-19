@@ -10,6 +10,7 @@ import { CustomTabBar } from '../components/ui/CustomTabBar';
 import NamLekhanScreen from '../screens/NaamLekhanScreen';
 import { IDeity } from '../types/IDeity';
 import AstrologersScreen from '../screens/astrologer/AstrologerScreen';
+import { useAuthStore } from '../store/useAuthore';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 export type RootTabParamList = {
@@ -69,18 +70,51 @@ const TABS: Itab<RootTabParamList>[] = [
   },
 ];
 
+const getVisibleTabs = (
+  isLoggedIn: boolean,
+  userRole: any,
+) => {
+  return TABS.filter(({ key }) => {
+    // Guests cannot see Community
+    if (!isLoggedIn && key === 'Community') {
+      return false;
+    }
+
+    // Pandits cannot see the Pandits tab
+    if (isLoggedIn && userRole === 'pandit' && key === 'Pandits') {
+      return false;
+    }
+
+    // Astrologers cannot see the Astrologers tab
+    if (
+      isLoggedIn &&
+      userRole === 'astrologer' &&
+      key === 'Astrologers'
+    ) {
+      return false;
+    }
+
+    return true;
+  });
+};
+
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const TabNavigator: React.FC = () => (
-  <Tab.Navigator
-    initialRouteName="Namlekhan"
-    tabBar={props => <CustomTabBar {...props} tabs={TABS} />}
-    screenOptions={{ headerShown: false }}
-  >
-    {TABS.map(({ key, component }) => (
-      <Tab.Screen key={key} name={key} component={component} />
-    ))}
-  </Tab.Navigator>
-);
+const TabNavigator: React.FC = () => {
+  const { isAuthenticated, user } = useAuthStore();
+  const visibleTabs = getVisibleTabs(isAuthenticated, user?.role);
+
+  return (
+    <Tab.Navigator
+      initialRouteName="Namlekhan"
+      tabBar={props => <CustomTabBar {...props} tabs={visibleTabs} />}
+      screenOptions={{ headerShown: false }}
+    >
+      {visibleTabs.map(({ key, component }) => (
+        <Tab.Screen key={key} name={key} component={component} />
+      ))}
+    </Tab.Navigator>
+  );
+};
 
 export default TabNavigator;

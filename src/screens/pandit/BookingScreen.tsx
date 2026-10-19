@@ -237,9 +237,6 @@ export default function BookingsScreen({ navigation }: Props) {
             <Text style={styles.headerLabel}>Manage</Text>
             <Text style={styles.headerTitle}>Bookings</Text>
           </View>
-          <TouchableOpacity style={styles.addBtn}>
-            <Ionicons name="add" size={22} color={Colors.textLight} />
-          </TouchableOpacity>
         </View>
         <Text style={styles.headerSub}>
           {counts.confirmed} upcoming · {counts.completed} completed this week

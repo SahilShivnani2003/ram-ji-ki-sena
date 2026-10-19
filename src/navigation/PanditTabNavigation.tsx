@@ -13,7 +13,6 @@ export type PanditTabParamList = {
   Bookings: undefined;
   Earnings: undefined;
   Profile: undefined;
-  Namlekhan: { deity?: IDeity };
 };
 
 const panditTabs: Itab<PanditTabParamList>[] = [
@@ -40,12 +39,6 @@ const panditTabs: Itab<PanditTabParamList>[] = [
     icon: 'person-outline',
     iconActive: 'person',
     component: ProfileScreen,
-  },
-  {
-    key: 'Namlekhan',
-    icon: 'document-text-outline',
-    iconActive: 'document-text',
-    component: NamLekhanScreen,
   },
 ];
 const Tab = createBottomTabNavigator<PanditTabParamList>();
